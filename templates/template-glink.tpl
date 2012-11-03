@@ -1,0 +1,1 @@
+<a href="%href%" title="Google-Maps" class="geco_glink">%text%</a>
