@@ -312,7 +312,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 
 		} else {
 
-			preg_match( $this->serach_pattern, $raw_response['body'], $version );
+			preg_match( $this->search_pattern, $raw_response['body'], $version );
 
 			$result = &$version[1];
 
