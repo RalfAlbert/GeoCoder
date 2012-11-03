@@ -55,7 +55,7 @@ class WP_GitHub_Updater
 	/**
 	 * Plugin-slug
 	 */
-	public $slug = '';
+	public static $slug = '';
 
 	/**
 	 * Array for error messages
@@ -73,7 +73,7 @@ class WP_GitHub_Updater
 	 * Cache for handler
 	 * @var object
 	 */
-	private $handler = NULL;
+	public $handler = NULL;
 
 	/**
 	 * Url to the zip-archive
@@ -166,9 +166,9 @@ class WP_GitHub_Updater
 		$plugin_data = $this->get_plugin_data( $config['file'] );
 
 		if( ! isset( $config['slug'] ) || empty( $config['slug'] ) )
-			$this->slug = plugin_basename( $config['file'] );
+			self::$slug = plugin_basename( $config['file'] );
 		else
-			$this->slug = $config['slug'];
+			self::$slug = $config['slug'];
 
 		$defaults =	array(
 						'handler'					=> 'GitHub',
@@ -280,9 +280,9 @@ class WP_GitHub_Updater
 	public function delete_transients(){
 
 		delete_site_transient( 'update_plugins' );
-		delete_site_transient( $this->slug . '_new_version' );
-//		delete_site_transient( $this->slug . '_repo_data' );
-		delete_site_transient( $this->slug . '_changelog' );
+		delete_site_transient( self::$slug . '_new_version' );
+//		delete_site_transient( self::$slug . '_repo_data' );
+		delete_site_transient( self::$slug . '_changelog' );
 
 	}
 
@@ -298,21 +298,6 @@ class WP_GitHub_Updater
 
 		return ( empty( $repo_data ) ) ? FALSE : $repo_data;
 
-// 		$repo_data = get_site_transient( $this->slug.'_repo_data' );
-
-// 		if( ! isset( $repo_data ) || empty( $repo_data ) ){
-
-// 			$repo_data = $this->handler->get_repo_data();
-
-// 			if( empty( $repo_data) )
-// 				return FALSE;
-
-// 			// refresh every 6 hours
-// 			set_site_transient( $this->slug.'_repo_data', $repo_data, self::HOUR );
-// 		}
-
-// 		return $repo_data;
-
 	}
 
 	/**
@@ -323,14 +308,14 @@ class WP_GitHub_Updater
 	 */
 	public function get_version(){
 
-		$version = get_site_transient( $this->slug . '_new_version' );
+		$version = get_site_transient( self::$slug . '_new_version' );
 
 		if( ! isset( $version ) || empty( $version ) ){
 
 			$version = $this->handler->get_version();
 
 			// refresh every 6 hours
-			set_site_transient( $this->slug . '_new_version', $version, self::HOUR * 6 );
+			set_site_transient( self::$slug . '_new_version', $version, self::HOUR * 6 );
 
 		}
 
@@ -408,7 +393,7 @@ class WP_GitHub_Updater
 
 			// If response is false, don't alter the transient
 			if( FALSE !== $response )
-				$transient->response[ $this->slug ] = $response;
+				$transient->response[ self::$slug ] = $response;
 		}
 
 		return $transient;
@@ -427,10 +412,10 @@ class WP_GitHub_Updater
 	public function get_plugin_info( $false, $action, $response ){
 
 		// Check if this call API is for the right plugin
-		if( $response->slug != $this->slug )
+		if( $response->slug != self::$slug )
 			return FALSE;
 
-		$response->slug				= $this->slug;
+		$response->slug				= self::$slug;
 		$response->plugin_name		= $this->config['plugin_name'];
 		$response->version			= $this->config['new_version'];
 		$response->author			= $this->config['author'];
@@ -465,7 +450,7 @@ class WP_GitHub_Updater
 		$wp_filesystem->move( $result['destination'], $proper_destination );
 
 		$result['destination'] = $proper_destination;
-		$activate = activate_plugin( WP_PLUGIN_DIR . '/' . $this->slug );
+		$activate = activate_plugin( WP_PLUGIN_DIR . '/' . self::$slug );
 
 		// Output the update message
 		echo is_wp_error( $activate ) ?

@@ -131,8 +131,9 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * Constructor
 	 *
 	 */
-	public function __construct(){}
-
+	public function __construct(){
+		// avoid calling parent::__construct()
+	}
 
 	/**
 	 * Setup the class
@@ -355,9 +356,9 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 		$cache = array();
 
 		if( defined('WP_GITHUB_FORCE_UPDATE') && TRUE == WP_GITHUB_FORCE_UPDATE )
-			delete_site_transient( $this->slug . '_github_data' );
+			delete_site_transient( parent::$slug . '_github_data' );
 
-		$cache = get_site_transient( $this->slug . '_github_data' );
+		$cache = get_site_transient( parent::$slug . '_github_data' );
 
 		if( isset( $cache[$id] ) && ! empty( $cache[$id] ) )
 			return $cache[$id];
@@ -408,7 +409,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 
 				$response = json_decode( $raw_response['body'], $this->return_as_array );
 				$cache[$id] = $response;
-				set_site_transient( $this->slug . '_github_data', $cache, self::HOUR );
+				set_site_transient( parent::$slug . '_github_data', $cache, self::HOUR );
 
 			}
 
