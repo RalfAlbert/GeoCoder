@@ -196,7 +196,7 @@ class GeoCoder
 
 		);
 
-		$this->updater = new WP_GitHub_Updater( $config );
+		self::$updater = new WP_GitHub_Updater( $config );
 
 	}
 
