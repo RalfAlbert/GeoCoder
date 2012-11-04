@@ -17,7 +17,7 @@
  * Plugin Name:	Geocoder 2.0
  * Plugin URI:	http://yoda.neun12.de
  * Description:	This plugin adds maps to posts based on location-codes or adresses and geotag them. You will need an <a href="https://developers.google.com/maps/signup">API-Key from Google</a> to work with this plugin.
- * Version: 	2.0
+ * Version: 	2.0.1
  * Author: 		Ralf Albert
  * Author URI: 	http://yoda.neun12.de
  * Text Domain:	geocoder

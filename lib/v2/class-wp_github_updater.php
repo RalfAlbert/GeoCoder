@@ -281,7 +281,6 @@ class WP_GitHub_Updater
 
 		delete_site_transient( 'update_plugins' );
 		delete_site_transient( self::$slug . '_new_version' );
-//		delete_site_transient( self::$slug . '_repo_data' );
 		delete_site_transient( self::$slug . '_changelog' );
 
 	}

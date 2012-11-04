@@ -6,8 +6,14 @@
  *
  * TODO: Add an option to setup the branch if the version will be read from file
  * TODO: Add an option to setup the branch for the zip-url
+ * TODO: handle lower- and uppercase filenames
+ * TODO: handle "file not found" in get_version_from_file
  *
  */
+
+if( ! defined( 'ABSPATH' ) )
+	die( 'Sorry Dave. I am afraid I could not do that!' );
+
 if( ! class_exists( 'GitHub_Api_Handler' ) ){
 
 class GitHub_Api_Handler extends WP_GitHub_Updater
@@ -39,12 +45,6 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 			'tag'			=> 'repos/%user%/%repo%/git/tags/%extra%',
 
 	);
-
-	/**
-	 * Cache for data from GitHub
-	 * @var array
-	 */
-	public $cache = array();
 
 	/**
 	 * GitHub username
@@ -100,11 +100,15 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 */
 	public $method = 'commit-message';
 
+	public static $api_calls_remaining = 0;
+
+	public static $api_calls_ratelimit = 0;
+
 	/**
 	 * Valid places to search for the version
 	 * @var array
 	 */
-	protected $search_places = array(
+	public $search_places = array(
 			'commit-message', 'file', 'tag'
 	);
 
@@ -116,7 +120,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 
 			'sslverify'					=> FALSE,
 			'access_token'				=> '',
-			'file_contains_version'		=> 'readme.md',
+			'file_contains_version'		=> 'README.md',
 			'search_pattern_version'	=> '-version:\s?(.+)',
 			'method'					=> 'commit-message'
 
@@ -132,7 +136,10 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 *
 	 */
 	public function __construct(){
-		// avoid calling parent::__construct()
+
+		if( defined('WP_GITHUB_FORCE_UPDATE') && TRUE == WP_GITHUB_FORCE_UPDATE )
+			delete_site_transient( parent::$slug . '_github_data' );
+
 	}
 
 	/**
@@ -157,7 +164,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * Initialize and setup the class-vars
 	 * @param	array	$config	Configuration
 	 */
-	protected function _init_handler( $config = array() ){
+	public function _init_handler( $config = array() ){
 
 		// setup configuration defaults
 		$config = wp_parse_args( $config, $this->config );
@@ -191,7 +198,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 		}
 
 		// fill the cache
-		$this->get_github_data( 'basic' );
+		$this->get_github_data();
 
 		// complete PCRE search pattern
 		$this->search_pattern = sprintf( '/%s/iu', $this->search_pattern_version );
@@ -258,7 +265,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * Get plugin version from commit message
 	 * @return	string	$version	Plugin version from commit message
 	 */
-	protected function get_version_from_commit_message(){
+	public function get_version_from_commit_message(){
 
 		$result = '';
 
@@ -290,7 +297,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * Get plugin version from file
 	 * @return	string	$version	Plugin version from file
 	 */
-	protected function get_version_from_file(){
+	public function get_version_from_file(){
 
 		$result = '';
 
@@ -298,9 +305,12 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 			$this->file_contains_version = 'readme.md';
 
 		$query = $this->api_urls['rawurl'] . '/' . $this->file_contains_version;
-		$query = add_query_arg( array( 'access_token' => $this->access_token ), $query );
+
+		if( ! empty( $this->access_token ) )
+			$query = add_query_arg( array( 'access_token' => $this->access_token ), $query );
 
 		$raw_response = wp_remote_get( $query, array('sslverify' => $this->config['sslverify']) );
+//TODO: Error handling for status-code != 200
 
 		if ( is_wp_error( $raw_response ) ){
 
@@ -326,7 +336,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * Get plugin version from tag
 	 * @return	string	$version	Plugin version from tag
 	 */
-	protected function get_version_from_tag(){
+	public function get_version_from_tag(){
 
 		$tag = new stdClass;
 
@@ -350,13 +360,10 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * @param	string	$id			ID of the action to be taken
 	 * @param	string	$extra_arg	Extra information like reference or sha-key
 	 */
-	protected function get_github_data( $id = 'basic', $extra_arg = '' ){
+	public function get_github_data( $id = 'basic', $extra_arg = '' ){
 
 		$response = '';
 		$cache = array();
-
-		if( defined('WP_GITHUB_FORCE_UPDATE') && TRUE == WP_GITHUB_FORCE_UPDATE )
-			delete_site_transient( parent::$slug . '_github_data' );
 
 		$cache = get_site_transient( parent::$slug . '_github_data' );
 
@@ -421,9 +428,10 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 
 	/**
 	 * Checking if the rate limit is exceeded
-	 * @return	boolean		anonymous	True if the rate limit is not exceeded, else false.
+	 * @param	boolean			$echo		Set to false (default) if the function should only check the rate-limit. True will return a string with remaining & allowed api calls
+	 * @return	boolean|string	anonymous	True if the rate limit is not exceeded, else false. Returns an string with remaining and allowed number of api calls if the argument is set to true.
 	 */
-	protected function check_rate_limit(){
+	public function check_rate_limit( $echo = FALSE ){
 
 		// check rate-limiting (per IP)
 		$raw_response = wp_remote_get( $this->api_urls['ratelimit'], array( 'sslverify' => $this->sslverify ) );
@@ -440,10 +448,10 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 
 			$headers = &$raw_response['headers'];
 
-			$remaining = $headers['x-ratelimit-remaining'];
-			$ratelimit = $headers['x-ratelimit-limit'];
+			self::$api_calls_remaining = $headers['x-ratelimit-remaining'];
+			self::$api_calls_ratelimit = $headers['x-ratelimit-limit'];
 
-			if( 0 >= $remaining ){
+			if( 0 >= self::$api_calls_remaining ){
 
 				$this->error = TRUE;
 				$this->set_error( 'warning', sprintf( __( 'Rate limit of %d api-calls is exceeded.', self::LANG ), $ratelimit ) );
@@ -453,7 +461,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 
 		}
 
-		return TRUE;
+		return ( FALSE !== $echo ) ? sprintf( '%d out of %d api calls remaining.', self::$api_calls_remaining, self::$api_calls_ratelimit ) : TRUE;
 
 	}
 
@@ -462,7 +470,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 *
 	 * @return	object|array	$repos	A list with all available repositories from an user
 	 */
-	protected function get_all_repos(){
+	public function get_all_repos(){
 
 		return $this->get_github_data( 'all_repos' );
 
@@ -473,7 +481,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 *
 	 * @return	object|array	$repo	Repository data
 	 */
-	protected function get_repo( $repo = '' ){
+	public function get_repo( $repo = '' ){
 
 		if( empty( $repo ) )
 			$repo = $this->repo;
@@ -488,7 +496,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * @param	string			$ref	Name of the reference
 	 * @return	objec|array		$ref	The reference
 	 */
-	protected function get_ref( $ref = '' ){
+	public function get_ref( $ref = '' ){
 
 		if( empty( $ref ) )
 			$ref = 'heads/master';
@@ -505,7 +513,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * @param	string			$sha	SHA-key (commit-identifier)
 	 * @return	object|array	$data	Commit data
 	 */
-	protected function get_last_commit( $sha ){
+	public function get_last_commit( $sha ){
 
 		return $this->get_github_data( 'last_commit', $sha );
 
@@ -516,7 +524,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 	 * @param	string	$sha		SHA-Key
 	 * @return	array	anonymous	Array with tags
 	 */
-	protected function get_tag( $sha ){
+	public function get_tag( $sha ){
 
 		return $this->get_github_data( 'tag', $sha );
 
