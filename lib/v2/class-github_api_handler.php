@@ -454,7 +454,7 @@ class GitHub_Api_Handler extends WP_GitHub_Updater
 			if( 0 >= self::$api_calls_remaining ){
 
 				$this->error = TRUE;
-				$this->set_error( 'warning', sprintf( __( 'Rate limit of %d api-calls is exceeded.', self::LANG ), $ratelimit ) );
+				$this->set_error( 'warning', sprintf( __( 'Rate limit of %d api-calls is exceeded.', self::LANG ), self::$api_calls_ratelimit ) );
 				return FALSE;
 
 			}
