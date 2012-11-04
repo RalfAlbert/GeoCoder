@@ -465,7 +465,7 @@ class GeoCoder_Frontend extends GeoCoder
 		$mapdata['maptype']		= $atts['maptype'];
 		$mapdata['generalmap']	= (int) $atts['generalmap']; //( isset( $atts['generalmap'] ) && TRUE === $atts['generalmap'] ) ? $this->get_generalmap_ids() : '';
 
-		$mapdata['latlng']		= $this->get_urlencoded_location_data( $atts['geodata'] );
+		$mapdata['latlng']		= empty( $atts['geodata']['center'] ) ? $this->get_urlencoded_latlon( $atts['geodata'] ) : $this->get_center_formated( $atts['geodata']['center'] );
 		$mapdata['addr']		= empty( $atts['geodata']['center'] ) ? $this->get_urlencoded_address( $atts['geodata'] ) : '';
 
 		//$mapdata['script']		= $this->get_gmap_scriptblock( $mapdata );
@@ -481,10 +481,12 @@ class GeoCoder_Frontend extends GeoCoder
 	 */
 	protected function get_urlencoded_location_data( $geodata = array() ){
 
+		$location = '';
+
 		// if the center-attribute is set, use this in priority
 		if( isset( $geodata['center'] ) && ! empty( $geodata['center'] ) ){
 
-			$location = $this->check_center_format( $geodata['center'] );
+			$location = $this->get_center_formated( $geodata['center'] );
 
 			if( FALSE !== $location )
 				return $location;
@@ -492,8 +494,7 @@ class GeoCoder_Frontend extends GeoCoder
 		}
 
 		// first try to get an address, than try to get geolocation, than quit with error
-		$location = $this->get_urlencoded_address( $geodata );
-
+ 		$location = $this->get_urlencoded_address( $geodata );
 		if( empty( $location ) )
 			$location = $this->get_urlencoded_latlon( $geodata );
 
@@ -670,7 +671,7 @@ class GeoCoder_Frontend extends GeoCoder
 	 * @param	string	$center		Comma seperated latitude and longitude as string
 	 * @return	string|bool			Well formated latlon-string or false on error
 	 */
-	protected function check_center_format( $center = '' ){
+	protected function get_center_formated( $center = '' ){
 
 		$data = explode( ',', $center );
 

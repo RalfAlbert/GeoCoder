@@ -154,8 +154,8 @@ if( null !== ( jQuery && google ) ){
 
 						if( status === google.maps.GeocoderStatus.OK ){
 
-							gcb.fields.lng.val( results[0].geometry.location.Ya );
-							gcb.fields.lat.val( results[0].geometry.location.Za );
+							gcb.fields.lat.val( results[0].geometry.location.Ya );
+							gcb.fields.lng.val( results[0].geometry.location.Za );
 
 							if( 'settings_page_geocoder' === pagenow ){
 								gcb.fields.msg.text( geocoderl10n.save_data_msg );} else {gcb.fields.msg.text( '' );

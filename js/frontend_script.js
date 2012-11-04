@@ -327,16 +327,20 @@ if( null !== ( jQuery && google ) ){
 		 */
 		geocodeAddress: function( element ){
 
-			var geocoder = new google.maps.Geocoder();
+			var address = gm.getAddress( element );
 
-			geocoder.geocode(
-					{ 'address': gm.getAddress( element ) },
+			if( '' !== address ){
+
+				var geocoder = new google.maps.Geocoder();
+
+				geocoder.geocode(
+					{ 'address': address },
 
 					function( results, status ){
 
 						if( status === google.maps.GeocoderStatus.OK ){
 
-							var latlng = { lat: results[0].geometry.location.Xa, lng: results[0].geometry.location.Ya };
+							var latlng = { lat: results[0].geometry.location.Ya, lng: results[0].geometry.location.Za };
 							var map = new google.maps.Map( document.getElementById( gm.getID( element ) ), gm.getMapOptions( element, latlng ) );
 
 							gm.addMarker( map, latlng, element );
@@ -345,9 +349,15 @@ if( null !== ( jQuery && google ) ){
 							gm.showError( element, status );
 						}
 
-					});
+					}
+				);
+			}
+
 		},
 
+		/**
+		 * Get LatLng-Coord via ajax from WordPress
+		 */
 		ajaxMultiMarker: function(){
 
 			jQuery.ajax({
