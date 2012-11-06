@@ -136,6 +136,8 @@ class GeoCoder_Installer extends GeoCoder
 
 		$new_options['plugin_version'] = self::VERSION;
 
+		$new_options = array_merge( $new_options, get_option( self::OPTION_KEY ) );
+
 		update_option( self::OPTION_KEY, $new_options );
 
 		// copy old data to post meta and delete the extra table
