@@ -65,9 +65,16 @@ class GeoCoder_Installer extends GeoCoder
 	 */
 	public static function uninstall(){
 
+		// initialize
+		self::do_init();
+
+		// drop options if not already been done
 		delete_option( self::OPTION_KEY );
 
-		self::$db->query( self::$db->prepare( "DELETE FROM {self::$db->postmeta} WHERE meta_key = '%s';", self::META_KEY ) );
+		// drop metadata from post-metas
+		$table = &self::$db->postmeta;
+
+		self::$db->query( self::$db->prepare( "DELETE FROM {$table} WHERE meta_key = '%s';", self::META_KEY ) );
 
 	}
 
@@ -108,11 +115,6 @@ class GeoCoder_Installer extends GeoCoder
 	protected static function do_update(){
 
 		$old_option_keys = array(
-			'geco_lon'			=> 'home_lon',
-			'geco_lat'			=> 'home_lat',
-			'geco_plz'			=> 'home_zip',
-			'geco_ort'			=> 'home_city',
-			'geco_str'			=> 'home_street',
 			'geco_RSS_geo'		=> 'rss_geo',
 			'geco_RSS_icbm'		=> 'rss_icbm',
 			'geco_RSS_geourl'	=> 'rss_geourl',
@@ -130,14 +132,12 @@ class GeoCoder_Installer extends GeoCoder
 
 		$new_options['plugin_version'] = self::VERSION;
 
-		set_option( self::OPTION_KEY, $new_options );
+		add_option( self::OPTION_KEY, $new_options );
 
 		// copy old data to post meta and delete the extra table
-		$old_data = self::$db->get_results( self::$db->prepare( "SELECT * FROM %s;", self::$tablename ) );
+		$old_data = self::$db->get_results( sprintf( "SELECT * FROM %s;", self::$tablename ) );
 
 		foreach ( $old_data as $entry ){
-
-			$post_id = &$entry->post_id;
 
 			$data = array(
 				'lon' => $entry->lon,
@@ -147,7 +147,7 @@ class GeoCoder_Installer extends GeoCoder
 				'str' => $entry->street
 			);
 
-			update_post_meta( $post_id, self::META_KEY, $data );
+			update_post_meta( $entry->post_id, self::META_KEY, $data );
 
 		}
 

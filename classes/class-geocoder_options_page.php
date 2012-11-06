@@ -108,25 +108,32 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 
 		$values = array_merge( $field_vals, $this->get_shared_form_fields( 'home' ) );
 
-		foreach( self::get_options( 'mapsizes' ) as $name => $size ){
-			$sizes = explode( 'x', $size );
-			$values["map_{$name}_x_val"] = $sizes[0];
-			$values["map_{$name}_y_val"] = $sizes[1];
+		if( $mapsizes = self::get_options( 'mapsizes' ) ){
+
+			foreach( self::get_options( 'mapsizes' ) as $name => $size ){
+				$sizes = explode( 'x', $size );
+				$values["map_{$name}_x_val"] = $sizes[0];
+				$values["map_{$name}_y_val"] = $sizes[1];
+			}
+
 		}
 
 
 		$values['def_mapsize_options'] = '';
 		$sel_ = self::get_options( 'def_mapsize' );
 
-		foreach( self::get_options( 'def_mapsizes' ) as $type => $size ){
-			$selected = ( $sel_ == $type ) ?
-			' selected="selected"' : '';
+		if( $def_mapsizes = self::get_options( 'def_mapsizes' ) ){
 
-			$size_name = ucfirst( $type );
+			foreach( $def_mapsizes as $type => $size ){
+				$selected = ( $sel_ == $type ) ?
+				' selected="selected"' : '';
 
-			$values['def_mapsize_options'] .= "<option value='{$type}'{$selected}>{$size_name}</option>";
+				$size_name = ucfirst( $type );
+
+				$values['def_mapsize_options'] .= "<option value='{$type}'{$selected}>{$size_name}</option>";
+			}
+
 		}
-
 
 		$values['map_type_options'] = '';
 		$sel_ = self::get_options( 'def_maptype' );

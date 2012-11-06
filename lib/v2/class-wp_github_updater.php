@@ -113,7 +113,7 @@ class WP_GitHub_Updater
 	 * @since	1.6
 	 * @param	string	$type	Type of the error (fatal, warning, notice, etc)
 	 * @param	string	$msg	Error message
-	 * @param	bool	$abort	Wether the script should stop or not.
+	 * @param	bool	$abort	Flag to show if the script should stop or not.
 	 */
 	public function set_error( $type = 'notice', $msg = '', $abort = FALSE ){
 

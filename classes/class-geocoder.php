@@ -214,11 +214,12 @@ class GeoCoder
 			$post_id = intval( $mode, 10 );
 
 		$filter		= array( 'plugin_version', 'sensor' );
+
 		$options	= 0 == $post_id ?
 			get_option( self::OPTION_KEY ) :
 			get_post_meta( $post_id, self::META_KEY, TRUE );
 
-		// if a single option is requested and if it is set, return the singel option directly
+		// if a single option is requested and if it is set, return the single option directly
 		if( key_exists( $mode, self::$options ) )
 			return isset( $options[$mode] ) ? $options[$mode] : FALSE;
 
