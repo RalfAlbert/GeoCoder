@@ -141,26 +141,34 @@ class GeoCoder_Installer extends GeoCoder
 		// copy old data to post meta and delete the extra table
 		$old_data = self::$db->get_results( sprintf( "SELECT * FROM %s;", self::$tablename ) );
 
-		foreach ( $old_data as $entry ){
+		foreach ( $old_data as $record ){
 
-			$data = array(
-				'lon' => $entry->lon,
-				'lat' => $entry->lat,
-				'plz' => $entry->zip,
-				'ort' => $entry->city,
-				'str' => $entry->street
+			// save post-id and delete unnecessary values to become an array with the same size as $keys
+			$post_id = $record->post_id;
+			unset( $record->post_id, $record->id );
+
+			$record	= (array) $record;
+
+			// mapping old keys to new keys
+			$data = array_combine(
+				array( 'lon', 'lat', 'zip', 'city', 'street' ),
+				array_values(
+						array_merge(
+								array( 'lon' => '', 'lat' => '', 'plz' => '', 'ort' => '', 'str' => '' ),
+								$record
+						)
+				)
 			);
 
-			update_post_meta( $entry->post_id, self::META_KEY, $data );
+			update_post_meta( $post_id, self::META_KEY, $data );
 
 		}
 
-		$drop_table = self::$db->query( self::$db->prepare( "DROP TABLE IF EXISTS %s;", self::$tablename ) );
+		$drop_table = self::$db->query( sprintf( "DROP TABLE IF EXISTS %s;", self::$tablename ) );
 
 		unset(
-			$old_option_keys, $old_key, $old_data, $old_data_sql,
-			$new_options, $new_key, $entry,
-			$drop_table_sql, $drop_table
+			$old_option_keys, $old_key, $old_data, $old_data_sql, $record, $post_id, $data,
+			$new_options, $new_key, $drop_table
 		);
 
 		return;
