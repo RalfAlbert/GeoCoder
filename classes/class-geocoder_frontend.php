@@ -69,9 +69,11 @@ class GeoCoder_Frontend extends GeoCoder
 				TRUE
 		);
 
+		$script_ext = ( TRUE === WP_DEBUG ) ? '-dev.js' : '-min.js';
+
 		wp_enqueue_script(
 				'geco_frontend_script',
-				plugins_url( 'js/frontend_script.js', self::$file ),
+				plugins_url( 'js/frontend_script' . $script_ext, self::$file ),
 				array( 'jquery', 'gmaps_api' ),
 				FALSE,
 				TRUE
@@ -95,7 +97,6 @@ class GeoCoder_Frontend extends GeoCoder
 					'ajaxurl'			=> admin_url( 'admin-ajax.php' ),
 					'nonce'				=> wp_create_nonce( self::NONCE_AJAX ),
 					'gmap_icon'			=> json_encode( self::$gmap_icon ),
-					//'gmap_icon_shadow'	=> $this->gmap_icon['shadow'],
 					'readmore'			=> __( 'Read More', self::LANG ),
 				);
 

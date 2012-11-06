@@ -62,9 +62,11 @@ class GeoCoder_Admin extends GeoCoder
 			TRUE
 		);
 
+		$script_ext = ( TRUE === WP_DEBUG ) ? '-dev.js' : '-min.js';
+
 		wp_register_script(
 			'geco_backend_script',
-			plugins_url( 'js/backend_script.js', self::$file ),
+			plugins_url( 'js/backend_script' . $script_ext, self::$file ),
 			array( 'jquery', 'gmaps_api' ),
 			FALSE,
 			TRUE
