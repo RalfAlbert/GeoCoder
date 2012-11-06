@@ -54,6 +54,7 @@ class GeoCoder_Installer extends GeoCoder
 	 */
 	public static function deactivate(){
 
+		// drop options from database
 		delete_option( self::OPTION_KEY );
 
 	}
@@ -114,6 +115,9 @@ class GeoCoder_Installer extends GeoCoder
 	 */
 	protected static function do_update(){
 
+		// prepare the install of new version
+		self::do_install();
+
 		$old_option_keys = array(
 			'geco_RSS_geo'		=> 'rss_geo',
 			'geco_RSS_icbm'		=> 'rss_icbm',
@@ -132,7 +136,7 @@ class GeoCoder_Installer extends GeoCoder
 
 		$new_options['plugin_version'] = self::VERSION;
 
-		add_option( self::OPTION_KEY, $new_options );
+		update_option( self::OPTION_KEY, $new_options );
 
 		// copy old data to post meta and delete the extra table
 		$old_data = self::$db->get_results( sprintf( "SELECT * FROM %s;", self::$tablename ) );
