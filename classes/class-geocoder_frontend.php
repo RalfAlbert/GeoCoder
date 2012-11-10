@@ -437,7 +437,15 @@ class GeoCoder_Frontend extends GeoCoder
 	 * @param	array	$atts	Shortcode attributes
 	 */
 	protected function setup_query_args( &$atts ){
-
+//TODO: language exceptions for some languages
+/*
+'en-AU': 'ENGLISH (AUSTRALIAN)',
+'en-GB': 'ENGLISH (GREAT BRITAIN)',
+'pt-BR': 'PORTUGUESE (BRAZIL)',
+'pt-PT': 'PORTUGUESE (PORTUGAL)',
+'zh-CN': 'CHINESE (SIMPLIFIED)',
+'zh-TW': 'CHINESE (TRADITIONAL)'
+ */
 		$query_args = array(
 				'sensor'	=> 'false',
 				'center'	=> $atts['center'],
@@ -446,6 +454,7 @@ class GeoCoder_Frontend extends GeoCoder
 				'format'	=> $atts['format'],
 				'language'	=> $atts['language'],
 				'size'		=> $atts['img_size'],
+				'language'	=> $this->get_language_att(),
 				'markers'	=> 'label:A' . $atts['markerpos']
 		);
 
