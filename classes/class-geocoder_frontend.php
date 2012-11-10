@@ -32,11 +32,11 @@ class GeoCoder_Frontend extends GeoCoder
 			'shadow_origin'	=> array( 'x' => 0, 'y' => 0 ),
 			'shadow_anchor'	=> array( 'x' => 0, 'y' => 35 ),
 
-		);
+	);
 
 	/**
 	 * Constructor
-	 */
+	*/
 	public function __construct(){
 
 		add_shortcode( 'glink',	array( &$this, 'glink_shortcode' ) );
@@ -62,43 +62,43 @@ class GeoCoder_Frontend extends GeoCoder
 			$gmaps_api_url = self::GOOGLE_MAPS_API_URL;
 
 		wp_enqueue_script(
-				'gmaps_api',
-				$gmaps_api_url,
-				FALSE,
-				FALSE,
-				TRUE
+		'gmaps_api',
+		$gmaps_api_url,
+		FALSE,
+		FALSE,
+		TRUE
 		);
 
 		$script_ext = ( TRUE === WP_DEBUG ) ? '-dev.js' : '-min.js';
 
 		wp_enqueue_script(
-				'geco_frontend_script',
-				plugins_url( 'js/frontend_script' . $script_ext, self::$file ),
-				array( 'jquery', 'gmaps_api' ),
-				FALSE,
-				TRUE
+		'geco_frontend_script',
+		plugins_url( 'js/frontend_script' . $script_ext, self::$file ),
+		array( 'jquery', 'gmaps_api' ),
+		FALSE,
+		TRUE
 		);
 
 
 		/*
 		 * This stylesheet MUST be included!
-		 * @see: http://stackoverflow.com/questions/7471830/google-maps-api-v3-weird-ui-display-glitches-with-screenshot
-		 */
+		* @see: http://stackoverflow.com/questions/7471830/google-maps-api-v3-weird-ui-display-glitches-with-screenshot
+		*/
 		wp_enqueue_style(
-				'geco_frontend_css',
-				plugins_url( 'css/frontend_style.css', self::$file ),
-				false,
-				false,
-				'screen'
-		);
+		'geco_frontend_css',
+		plugins_url( 'css/frontend_style.css', self::$file ),
+		false,
+		false,
+		'screen'
+				);
 
 		// ajaxurl for frontend ajax calls
 		$data = array(
-					'ajaxurl'			=> admin_url( 'admin-ajax.php' ),
-					'nonce'				=> wp_create_nonce( self::NONCE_AJAX ),
-					'gmap_icon'			=> json_encode( self::$gmap_icon ),
-					'readmore'			=> __( 'Read More', self::LANG ),
-				);
+				'ajaxurl'			=> admin_url( 'admin-ajax.php' ),
+				'nonce'				=> wp_create_nonce( self::NONCE_AJAX ),
+				'gmap_icon'			=> json_encode( self::$gmap_icon ),
+				'readmore'			=> __( 'Read More', self::LANG ),
+		);
 
 		wp_localize_script( 'geco_frontend_script', 'GeoCoder', $data );
 
@@ -179,14 +179,14 @@ class GeoCoder_Frontend extends GeoCoder
 
 		// setup defaults
 		$atts =
-			shortcode_atts(
+		shortcode_atts(
 				array(
-				'text'		=> 'GoogleMaps',
-				'zoom'		=> self::get_options( 'def_mapzoom' ),
-				'maptype'	=> 'street',
+						'text'		=> 'GoogleMaps',
+						'zoom'		=> self::get_options( 'def_mapzoom' ),
+						'maptype'	=> 'street',
 				),
 				$atts
-			);
+		);
 
 
 		// get the urlencoded address (if available)
@@ -206,24 +206,24 @@ class GeoCoder_Frontend extends GeoCoder
 			// empty latlon
 			case '01':
 				$atts['latlon'] = '';
-			break;
+				break;
 
-			// empty address
+				// empty address
 			case '10':
 				$atts['latlon']	= '&amp;q=' . $atts['latlon'];
 				$atts['addr']	= '';
-			break;
+				break;
 
-			// address and latlon NOT empty
+				// address and latlon NOT empty
 			case '00':
 				$atts['latlon'] = '&amp;ll=' . $atts['latlon'];
-			break;
+				break;
 
-			// both empty -> error
+				// both empty -> error
 			case '11':
 			default:
 				return __( '[<strong>GeoCoder Error</strong>: Unable to convert address and/or geo-location]', self::LANG );
-			break;
+				break;
 		}
 
 		// prepare link-text for output
@@ -242,16 +242,16 @@ class GeoCoder_Frontend extends GeoCoder
 		$base_url = rtrim( self::GOOGLE_MAPS_LINK_URL, '?' ) . '?';
 
 		$atts['href'] = add_query_arg(
-			array(
-				'f'		=> 'q',
-				'hl'	=> $atts['language'],
-				't'		=> $atts['maptype'],
-				'z'		=> $atts['zoom'],
-				'om'	=> 1,
-				'ie'	=> 'UTF8',
+				array(
+						'f'		=> 'q',
+						'hl'	=> $atts['language'],
+						't'		=> $atts['maptype'],
+						'z'		=> $atts['zoom'],
+						'om'	=> 1,
+						'ie'	=> 'UTF8',
 
-			),
-			$base_url
+				),
+				$base_url
 		);
 
 		$atts['href'] .= $atts['addr'] . $atts['latlon'];
@@ -283,8 +283,8 @@ class GeoCoder_Frontend extends GeoCoder
 		$this->setup_query_args( $atts );
 
 		return ( TRUE === $atts['static'] ) ?
-			self::$view->get_view( 'gmap_static', $atts ) :
-			self::$view->get_view( 'gmap_dynamic', $this->get_dynamic_mapdata( $atts ) );
+		self::$view->get_view( 'gmap_static', $atts ) :
+		self::$view->get_view( 'gmap_dynamic', $this->get_dynamic_mapdata( $atts ) );
 
 
 	}
@@ -323,23 +323,23 @@ class GeoCoder_Frontend extends GeoCoder
 	protected function setup_attributes_defaults( &$atts ){
 
 		$atts =
-			shortcode_atts(
-					array(
-							'staticapi'		=> self::GOOGLE_STATIC_MAP_URL,
-							'dynamicapi'	=> self::GOOGLE_MAPS_API_URL,
-							'static'		=> self::get_options( 'static_maps' ),
-							'text'			=> 'GoogleMaps',
-							'center'		=> '',
-							'zoom'			=> self::get_options( 'def_mapzoom' ),
-							'size'			=> '',
-							'width'			=> '',
-							'height'		=> '',
-							'format'		=> self::get_options( 'def_mapformat' ),
-							'maptype'		=> self::get_options( 'def_maptype' ),
-							'generalmap'	=> FALSE,
-					),
-					$atts
-			);
+		shortcode_atts(
+				array(
+						'staticapi'		=> self::GOOGLE_STATIC_MAP_URL,
+						'dynamicapi'	=> self::GOOGLE_MAPS_API_URL,
+						'static'		=> self::get_options( 'static_maps' ),
+						'text'			=> 'GoogleMaps',
+						'center'		=> '',
+						'zoom'			=> self::get_options( 'def_mapzoom' ),
+						'size'			=> '',
+						'width'			=> '',
+						'height'		=> '',
+						'format'		=> self::get_options( 'def_mapformat' ),
+						'maptype'		=> self::get_options( 'def_maptype' ),
+						'generalmap'	=> FALSE,
+				),
+				$atts
+		);
 
 
 		// clear errors
@@ -390,12 +390,12 @@ class GeoCoder_Frontend extends GeoCoder
 		// maptype (roadmap, satellite, hybrid, terrain)
 		$atts['maptype'] = strtolower( $atts['maptype'] );
 		$atts['maptype'] = ( in_array( $atts['maptype'], self::get_options( 'def_maptypes' ) ) ) ?
-			$atts['maptype'] : 'roadmap';
+		$atts['maptype'] : 'roadmap';
 
 		// image-format (png, gif, jpg, ...)
 		$atts['format'] = strtolower( $atts['format'] );
 		$atts['format'] = ( in_array( $atts['format'], self::get_options( 'def_mapformats' ) ) ) ?
-			$atts['format'] : 'png';
+		$atts['format'] : 'png';
 
 		// get the blog-language
 		$atts['language'] = $this->get_language_att();
@@ -411,7 +411,7 @@ class GeoCoder_Frontend extends GeoCoder
 			$atts['size'] = "{$atts['width']}x{$atts['height']}";
 		// select default named mapsize if no size-value is set
 		elseif( empty( $atts['size'] ) && empty( $atts['width'] ) && empty( $atts['height'] ) )
-			$atts['size'] = self::get_options( 'def_mapsize' );
+		$atts['size'] = self::get_options( 'def_mapsize' );
 
 		else
 			$atts['size'] = strtolower( $atts['size'] );
@@ -437,15 +437,15 @@ class GeoCoder_Frontend extends GeoCoder
 	 * @param	array	$atts	Shortcode attributes
 	 */
 	protected function setup_query_args( &$atts ){
-//TODO: language exceptions for some languages
-/*
-'en-AU': 'ENGLISH (AUSTRALIAN)',
-'en-GB': 'ENGLISH (GREAT BRITAIN)',
-'pt-BR': 'PORTUGUESE (BRAZIL)',
-'pt-PT': 'PORTUGUESE (PORTUGAL)',
-'zh-CN': 'CHINESE (SIMPLIFIED)',
-'zh-TW': 'CHINESE (TRADITIONAL)'
- */
+		//TODO: language exceptions for some languages
+		/*
+		 'en-AU': 'ENGLISH (AUSTRALIAN)',
+		'en-GB': 'ENGLISH (GREAT BRITAIN)',
+		'pt-BR': 'PORTUGUESE (BRAZIL)',
+		'pt-PT': 'PORTUGUESE (PORTUGAL)',
+		'zh-CN': 'CHINESE (SIMPLIFIED)',
+		'zh-TW': 'CHINESE (TRADITIONAL)'
+		*/
 		$query_args = array(
 				'sensor'	=> 'false',
 				'center'	=> $atts['center'],
@@ -510,7 +510,7 @@ class GeoCoder_Frontend extends GeoCoder
 		}
 
 		// first try to get an address, than try to get geolocation, than quit with error
- 		$location = $this->get_urlencoded_address( $geodata );
+		$location = $this->get_urlencoded_address( $geodata );
 		if( empty( $location ) )
 			$location = $this->get_urlencoded_latlon( $geodata );
 
@@ -559,21 +559,21 @@ class GeoCoder_Frontend extends GeoCoder
 
 		/*
 		 * maptype
-		 * &t=
-		 * h = satelit
-		 * m = street
-		 * f = GoogleEarth
-		 */
+		* &t=
+		* h = satelit
+		* m = street
+		* f = GoogleEarth
+		*/
 
 		$types = array(
-			'geo'			=> 'h',
-			'map'			=> 'm',
-			'street'		=> 'm',
-			'google-earth'	=> 'f',
-			'satellite'		=> 'k',
-			'roadmap'		=> 'm',
-			'hybrid'		=> 'h',
-			'terrain'		=> 'f'
+				'geo'			=> 'h',
+				'map'			=> 'm',
+				'street'		=> 'm',
+				'google-earth'	=> 'f',
+				'satellite'		=> 'k',
+				'roadmap'		=> 'm',
+				'hybrid'		=> 'h',
+				'terrain'		=> 'f'
 
 		);
 
@@ -632,7 +632,7 @@ class GeoCoder_Frontend extends GeoCoder
 			$values .= $val;
 
 		return ( empty( $values ) ) ?
-			__( '[<strong>GeoCoder Error</strong>: No geodata available for this post]', self::LANG ) : FALSE;
+		__( '[<strong>GeoCoder Error</strong>: No geodata available for this post]', self::LANG ) : FALSE;
 
 	}
 

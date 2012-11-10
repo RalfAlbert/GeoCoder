@@ -119,10 +119,10 @@ class GeoCoder_Installer extends GeoCoder
 		self::do_install();
 
 		$old_option_keys = array(
-			'geco_RSS_geo'		=> 'rss_geo',
-			'geco_RSS_icbm'		=> 'rss_icbm',
-			'geco_RSS_geourl'	=> 'rss_geourl',
-			'geco_apikey'		=> 'apikey'
+				'geco_RSS_geo'		=> 'rss_geo',
+				'geco_RSS_icbm'		=> 'rss_icbm',
+				'geco_RSS_geourl'	=> 'rss_geourl',
+				'geco_apikey'		=> 'apikey'
 		);
 
 		$new_options = array();
@@ -153,13 +153,13 @@ class GeoCoder_Installer extends GeoCoder
 
 			// mapping old keys to new keys
 			$data = array_combine(
-				array( 'lon', 'lat', 'zip', 'city', 'street' ),
-				array_values(
-						array_merge(
-								array( 'lon' => '', 'lat' => '', 'plz' => '', 'ort' => '', 'str' => '' ),
-								$record
-						)
-				)
+					array( 'lon', 'lat', 'zip', 'city', 'street' ),
+					array_values(
+							array_merge(
+									array( 'lon' => '', 'lat' => '', 'plz' => '', 'ort' => '', 'str' => '' ),
+									$record
+							)
+					)
 			);
 
 			update_post_meta( $post_id, self::META_KEY, $data );
@@ -169,8 +169,8 @@ class GeoCoder_Installer extends GeoCoder
 		$drop_table = self::$db->query( sprintf( "DROP TABLE IF EXISTS %s;", self::$tablename ) );
 
 		unset(
-			$old_option_keys, $old_key, $old_data, $old_data_sql, $record, $post_id, $data,
-			$new_options, $new_key, $drop_table
+				$old_option_keys, $old_key, $old_data, $old_data_sql, $record, $post_id, $data,
+				$new_options, $new_key, $drop_table
 		);
 
 		return;

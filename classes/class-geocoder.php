@@ -91,7 +91,7 @@ class GeoCoder
 	 * @var	array	$options
 	 */
 	protected static $options =
-		array(
+	array(
 			'do_rss'		=> FALSE,
 			'rss_geo'		=> FALSE,
 			'rss_icbm'		=> FALSE,
@@ -102,18 +102,18 @@ class GeoCoder
 			'def_mapsize'		=> 'medium',
 			// default (basic) mapsizes available after plugin activation
 			'def_mapsizes'	=>
-				array(
+			array(
 					'small'		=> '300x200',
 					'medium'	=> '400x200',
 					'large'		=> '500x300'
-				),
+			),
 			// array for customized mapsizes
 			'mapsizes'		=>
-				array(
+			array(
 					'small'		=> '300x200',
 					'medium'	=> '400x200',
 					'large'		=> '500x300'
-				),
+			),
 
 			'def_mapformat'		=> 'png',
 			'def_mapformats'	=> array( 'png', 'jpg', 'gif' ),
@@ -122,12 +122,12 @@ class GeoCoder
 			'def_maptypes'		=> array( 'roadmap', 'satellite', 'terrain', 'hybrid' ),
 
 			'def_mapzoom'		=> 15
-		);
+	);
 
 	/**
 	 * GitHub Update Routine
 	 * @var	object
-	 */
+	*/
 	public static $updater = NULL;
 
 	/**
@@ -155,10 +155,10 @@ class GeoCoder
 		}
 
 		load_plugin_textdomain(
-			self::LANG,
-			FALSE,
-			self::$abspath . '/languages/'
-		);
+		self::LANG,
+		FALSE,
+		self::$abspath . '/languages/'
+				);
 
 		// add ajax callbacks HERE. Adding ajax-callbacks in another place is to late. Damm WP
 		self::add_ajax_callbacks();
@@ -216,8 +216,8 @@ class GeoCoder
 		$filter		= array( 'plugin_version', 'sensor' );
 
 		$options	= 0 == $post_id ?
-			get_option( self::OPTION_KEY ) :
-			get_post_meta( $post_id, self::META_KEY, TRUE );
+		get_option( self::OPTION_KEY ) :
+		get_post_meta( $post_id, self::META_KEY, TRUE );
 
 		// if a single option is requested and if it is set, return the single option directly
 		if( key_exists( $mode, self::$options ) )
@@ -226,7 +226,7 @@ class GeoCoder
 		// unset not needed values
 		foreach( $filter as $key )
 			if( isset( $options[$key] ) )
-				unset( $options[$key] );
+			unset( $options[$key] );
 
 		return $options;
 
@@ -247,14 +247,14 @@ class GeoCoder
 			$new_options = array( $mode => $new_options );
 
 		$old_options = is_string( $mode ) ?
-			get_option( self::OPTION_KEY ) :
-			(array) get_post_meta( $post_id, self::META_KEY, TRUE );
+		get_option( self::OPTION_KEY ) :
+		(array) get_post_meta( $post_id, self::META_KEY, TRUE );
 
 		$new_options = array_merge( $old_options, $new_options );
 
 		is_string( $mode ) ?
-			update_option( self::OPTION_KEY, $new_options ) :
-			update_post_meta( $post_id, self::META_KEY, $new_options );
+		update_option( self::OPTION_KEY, $new_options ) :
+		update_post_meta( $post_id, self::META_KEY, $new_options );
 
 	}
 
