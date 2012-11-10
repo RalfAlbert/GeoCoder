@@ -259,6 +259,33 @@ class GeoCoder
 	}
 
 	/**
+	 *
+	 * Shorten a given text to x words and paste dots at the end
+	 * The function will REMOVE shortcodes and tags!
+	 * @param	string	$text		Text to be shorten
+	 * @param	integer	$num_words	(optional; default: 55) Number of words the text will be shorten to
+	 * @param	string	$more		(optional; default: &hellip; ) Text/string to display at the end of the shorten text
+	 */
+	protected function trim_words( $text, $num_words = 55, $more = '&hellip;' ) {
+
+		$original_text = $text;
+
+		$text = wp_strip_all_tags( $text );
+
+		$words_array = preg_split( "/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY );
+
+		if ( count( $words_array ) > $num_words ) {
+			array_pop( $words_array );
+			$text = implode( ' ', $words_array );
+			$text = $text . $more;
+		} else {
+			$text = implode( ' ', $words_array );
+		}
+
+		return $text;
+	}
+
+	/**
 	 * Adding ajax-callback functions with the WP-API
 	 */
 	protected static function add_ajax_callbacks(){

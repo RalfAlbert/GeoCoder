@@ -605,52 +605,6 @@ class GeoCoder_Frontend extends GeoCoder
 	}
 
 	/**
-	 * Creates an JavaScript to store the data
-	 * @param	string	Random ID of the HTML element
-	 * @return	string	JavaScript in a string
-	 */
-	protected function get_gmap_scriptblock( $data = array() ){
-
-		global $wpdb;
-
-		// needed keys
-		$defaults = array(
-					'latlng'		=> '',
-					'addr'			=> '',
-					'zoom'			=> '',
-					'maptype'		=> '',
-					'generalmap'	=> '',
-				 );
-
-		$mapdata = array();
-
-		// pick the wanted keys & values from the input-array
-		foreach( array_keys( $defaults ) as $key )
-			$mapdata[$key] = ( isset( $data[$key] ) && ! empty( $data[$key] ) ) ? $data[$key] : '';
-
-		// if a general map is set, pick the data from DB
-		if( isset( $data['generalmap'] ) && TRUE === $data['generalmap'] ){
-			$mapdata['generalmap'] = sprintf(
-					'[%s]',
-					implode( ',', $wpdb->get_col( $wpdb->prepare( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '%s';", self::META_KEY ), 0 ) )
-			);
-		}
-
-		// convert array-values to JS-object-items
-		foreach( $mapdata as $key => $value ){
-			if( ! empty( $value ) && 'id' !== $key )
-				$mapdata[$key] = sprintf( "%s: '%s',\n", $key, $value );
-		}
-
-		// pick the id from input-array
-		$mapdata['id'] = ( isset( $data['id'] ) && ! empty( $data['id'] ) ) ? $data['id'] : '000';
-
-		// create and return the view
-		return self::$view->get_view( 'gmap-scriptblock', $mapdata );
-
-	}
-
-	/**
 	 * Checks if some geodata (adress and/or longitude-latitude) was given
 	 * @param	array		$geodata
 	 * @return	string|bool	Error message if no geodata are present or FALSE if there are some geodata
