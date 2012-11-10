@@ -3,10 +3,10 @@
  * Depending on jQuery and Google Maps API v3
  *
  *  @author Ralf Albert
- *  @version 1.0
+ *  @version 1.1
  */
 
-var GeoCoderFrontend, GeoCoder, gm, list;
+var GeoCoderFrontend, GeoCoder, gm;
 
 if( 'undefined' === jQuery || 'undefined' === google ){
 	var google = null;
@@ -22,6 +22,11 @@ if( null !== ( jQuery && google ) ){
 
 	GeoCoderFrontend = {
 
+		list:	null,
+		image:	null,
+		shadow:	null,
+		shape:	null,
+
 		/**
 		 * Initialize the GeoCoderMapObject
 		 *
@@ -30,8 +35,36 @@ if( null !== ( jQuery && google ) ){
 		 */
 		init: function(){
 
-			gm = this;
-			list = null;
+			gm		= this;
+			gm.list	= null;
+
+			var icon = $.parseJSON( GeoCoder.gmap_icon );
+
+			gm.image = new google.maps.MarkerImage(
+					icon.icon_url,
+					new google.maps.Size( icon.icon_size.width, icon.icon_size.height ),
+					new google.maps.Point( icon.icon_origin.x, icon.icon_origin.y ),
+					new google.maps.Point( icon.icon_anchor.x, icon.icon_anchor.y )
+			);
+
+			gm.shadow = new google.maps.MarkerImage(
+					icon.shadow_url,
+					new google.maps.Size( icon.shadow_size.width, icon.shadow_size.height ),
+					new google.maps.Point( icon.shadow_origin.x, icon.shadow_origin.y ),
+					new google.maps.Point( icon.shadow_anchor.x, icon.shadow_anchor.y )
+			);
+
+			// the clickabel area, defined by the origin and width/height of the icon
+			gm.shape = {
+				coord: [
+						icon.icon_origin.x, icon.icon_origin.y,
+						icon.icon_origin.x, icon.icon_size.height,
+						icon.icon_size.width, icon.icon_size.height,
+						icon.icon_size.width , icon.icon_origin.y
+						],
+				type: 'poly'
+			};
+
 
 			$( '.geco_dynamic_map' ).each(
 					function(){
@@ -171,118 +204,6 @@ if( null !== ( jQuery && google ) ){
 		},
 
 		/**
-		 * Add one or more marker(s) to the map
-		 * @param	object	map		GoogleMap object
-		 * @param	object	latlng	LatLong-object
-		 * @param	object	element	DOM element
-		 */
-		addMarker: function( map, latlng, element ){
-
-			var markers;
-
-			if( true === gm.isGeneralMap( element ) ){
-
-				gm.ajaxMultiMarker();
-				markers = $.parseJSON( gm.list );
-
-			} else {
-
-				markers			= { 'A': latlng };
-				markers.A.title	= '';
-				markers.A.text	= '';
-				markers.A.link	= '';
-
-			}
-
-			gm.setMarkers( map, markers );
-
-		},
-
-		/**
-		 * Add marker(s) to the map
-		 * @param	object	map			Googloe map object
-		 * @param	object	locations	Object with data for location & infowindow
-		 */
-		setMarkers: function( map, locations ){
-
-			var icon = $.parseJSON( GeoCoder.gmap_icon );
-
-			var image = new google.maps.MarkerImage(
-					icon.icon_url,
-					new google.maps.Size( icon.icon_size.width, icon.icon_size.height ),
-					new google.maps.Point( icon.icon_origin.x, icon.icon_origin.y ),
-					new google.maps.Point( icon.icon_anchor.x, icon.icon_anchor.y )
-			);
-
-			var shadow = new google.maps.MarkerImage(
-					icon.shadow_url,
-					new google.maps.Size( icon.shadow_size.width, icon.shadow_size.height ),
-					new google.maps.Point( icon.shadow_origin.x, icon.shadow_origin.y ),
-					new google.maps.Point( icon.shadow_anchor.x, icon.shadow_anchor.y )
-			);
-
-			// the clickabel area, defined by the origin and width/height of the icon
-			var shape = {
-				coord: [
-						icon.icon_origin.x, icon.icon_origin.y,
-						icon.icon_origin.x, icon.icon_size.height,
-						icon.icon_size.width, icon.icon_size.height,
-						icon.icon_size.width , icon.icon_origin.y
-						],
-				type: 'poly'
-			};
-
-			for( var i in locations ){
-
-				if( 'undefinde' !== typeof locations[i] ) {
-
-					var data = locations[i];
-					var latlng = new google.maps.LatLng( data.lat, data.lng );
-
-					var marker = new google.maps.Marker({
-						position: latlng,
-						map: map,
-						shadow: shadow,
-						icon: image,
-						shape: shape,
-						title: data.title
-						//zIndex: i
-					});
-
-					if( '' !== data.title ){
-
-						var contentString =
-							'<div id="content">'+
-							'<div id="siteNotice">'+
-							'</div>'+
-							'<h1 id="firstHeading" class="firstHeading">'+data.title+'</h1>'+
-							'<div id="bodyContent">'+
-							'<p>'+data.text+'</p>'+
-							'<p><a href="'+data.link+'">'+GeoCoder.readmore+'</a>'+
-							'</div>'+
-							'</div>';
-
-							var infowindow = new google.maps.InfoWindow({
-								content: contentString
-							});
-
-							gm.addInfoWindow( map, marker, infowindow );
-					} // end if data.title
-
-				} // end typeof
-
-			} // end for in locations
-		},
-
-		addInfoWindow: function( map, marker, infowindow ){
-
-			google.maps.event.addListener( marker, 'click', function() {
-				infowindow.open( map, marker );
-			});
-
-		},
-
-		/**
 		 * Determines if a map is a general map
 		 * @param	object	element		DOM element
 		 * @return	bool	anonymous	True if the map is a general map, false if not
@@ -301,15 +222,53 @@ if( null !== ( jQuery && google ) ){
 		 * @uses	getMapOptions()
 		 * @param	object	element		DOM element which keeps the data for the map and display the map
 		 */
-		geocodeLatlng: function( element ){
+		geocodeLatlng: function( element, latlng ){
 
-			var latlng = gm.getLatlngObject( element );
+			if( 'undefined' === typeof latlng ){
+
+				latlng = gm.getLatlngObject( element );
+
+			}
 
 			if( null !== latlng ){
 
-				var map = new google.maps.Map( document.getElementById( gm.getID( element ) ), gm.getMapOptions( element, latlng ) );
+				google.maps.event.addDomListener( window, 'load', function() {
 
-				gm.addMarker( map, latlng, element );
+					var map = new google.maps.Map( document.getElementById( gm.getID( element ) ), gm.getMapOptions( element, latlng ) );
+
+					var infoWindow = new google.maps.InfoWindow();
+
+					var onMarkerClick = function() {
+
+						var marker = this;
+						var contentString = gm.getContentString( marker.data );
+
+						infoWindow.setContent( contentString );
+						infoWindow.open(map, marker);
+
+					};
+
+					// add auto close
+					google.maps.event.addListener(map, 'click', function() {
+						infoWindow.close();
+					});
+
+					// get markers
+					var markers = gm.getMarkers( latlng, element );
+
+					// markers with event listeners
+					for( var i in markers ){
+
+						if( 'undefined' !== typeof markers[i] ){
+
+							var marker = gm.getMarker( map, markers[i] );
+
+							google.maps.event.addListener( marker, 'click', onMarkerClick );
+
+						}
+					}
+
+				});
 
 			} else {
 
@@ -318,6 +277,7 @@ if( null !== ( jQuery && google ) ){
 			}
 
 		},
+
 
 		/**
 		 * Create and display a map based on stored address. Geocodes the address first
@@ -339,12 +299,8 @@ if( null !== ( jQuery && google ) ){
 					function( results, status ){
 
 						if( status === google.maps.GeocoderStatus.OK ){
-
 							var latlng = { lat: results[0].geometry.location.Ya, lng: results[0].geometry.location.Za };
-							var map = new google.maps.Map( document.getElementById( gm.getID( element ) ), gm.getMapOptions( element, latlng ) );
-
-							gm.addMarker( map, latlng, element );
-
+							gm.geocodeLatlng( element, latlng );
 						} else {
 							gm.showError( element, status );
 						}
@@ -368,6 +324,93 @@ if( null !== ( jQuery && google ) ){
 				async:		false
 
 			});
+
+		},
+
+		/**
+		 * Add one or more marker(s) to the map
+		 * @param	object	map		GoogleMap object
+		 * @param	object	latlng	LatLong-object
+		 * @param	object	element	DOM element
+		 */
+		getMarkers: function( latlng, element ){
+
+			var markers;
+
+			if( true === gm.isGeneralMap( element ) ){
+
+				gm.ajaxMultiMarker();
+
+				markers = $.parseJSON( gm.list );
+
+			} else {
+
+				markers			= { 'A': latlng };
+				markers.A.title	= '';
+				markers.A.text	= '';
+				markers.A.link	= '';
+
+			}
+
+			return markers;
+
+		},
+
+		/**
+		 * Create a single map marker
+		 * @param	object	map		Map object
+		 * @param	object	data	Marker data
+		 */
+		getMarker: function( map, data ){
+
+			var marker = new google.maps.Marker({
+				map:		map,
+				position:	new google.maps.LatLng( data.lat, data.lng ),
+				shadow:		gm.shadow,
+				icon:		gm.image,
+				shape:		gm.shape
+			});
+
+			if( '' !== data.title ){
+
+				marker.title = data.title;
+
+			}
+
+			marker.data = data;
+
+			return marker;
+
+		},
+
+		/**
+		 * Return content string for infowindow
+		 * @param	object	data	Data object
+		 */
+		getContentString: function( data ){
+
+			var contentString = '';
+
+			if( 'undefinde' !== typeof data ) {
+
+				if( '' !== data.title ){
+
+					contentString = '<div id="content">'+
+						'<div id="siteNotice">'+
+						'</div>'+
+						'<h1 id="firstHeading" class="firstHeading">'+data.title+'</h1>'+
+						'<div id="bodyContent">'+
+						'<p>'+data.text+'</p>'+
+						'<p><a href="'+data.link+'">'+GeoCoder.readmore+'</a>'+
+						'</div>'+
+						'</div>';
+
+
+				} // end if data.title
+
+			} // end typeof
+
+			return contentString;
 
 		}
 
