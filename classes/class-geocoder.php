@@ -266,20 +266,27 @@ class GeoCoder
 	 * @param	integer	$num_words	(optional; default: 55) Number of words the text will be shorten to
 	 * @param	string	$more		(optional; default: &hellip; ) Text/string to display at the end of the shorten text
 	 */
-	protected function trim_words( $text, $num_words = 55, $more = '&hellip;' ) {
+	protected static function shorten_text( $text, $num_words = 55, $more = '&hellip;' ) {
 
-		$original_text = $text;
+		// remove HTML tags (do not remove breaks)
+		$text = wp_strip_all_tags( $text, FALSE );
 
-		$text = wp_strip_all_tags( $text );
+		// remove shortcodes etc.
+		$text = preg_replace( '#\[.+\]#ius', '', $text );
 
+		// split text into words. use space and line-ends as seperator
 		$words_array = preg_split( "/[\n\r\t ]+/", $text, $num_words + 1, PREG_SPLIT_NO_EMPTY );
 
-		if ( count( $words_array ) > $num_words ) {
+		if( count( $words_array ) > $num_words ){
+
 			array_pop( $words_array );
 			$text = implode( ' ', $words_array );
 			$text = $text . $more;
+
 		} else {
+
 			$text = implode( ' ', $words_array );
+
 		}
 
 		return $text;

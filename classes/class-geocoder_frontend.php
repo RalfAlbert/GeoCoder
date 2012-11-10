@@ -106,6 +106,8 @@ class GeoCoder_Frontend extends GeoCoder
 
 	/**
 	 * Ajaxcallback to get the lonlat-data from all posts with a map
+	 * @use	filter	int		geocoder_excerpt_num_words	Set the nukmber of words for the excerpt-length in gmap infowindows. Default is 55 words
+	 * @use	filter	string	geocoder_excerpt_ends_with	Set the text/string that will append to the excerpt. Default is &hellip;
 	 */
 	public static function get_ajax_multimarker(){
 
@@ -120,6 +122,10 @@ class GeoCoder_Frontend extends GeoCoder
 
 		$data = array();
 
+		// setup values for shorten text
+		$excerpt_num_words	= apply_filters( 'geocoder_excerpt_num_words', 55 );
+		$excerpt_ends_with	= apply_filters( 'geocoder_excerpt_ends_with', '&hellip;' );
+
 		foreach( $post_ids as $key => $post_id ){
 
 			if( 'publish' === get_post_status( $post_id ) ){
@@ -131,8 +137,8 @@ class GeoCoder_Frontend extends GeoCoder
 					$post = get_post( $post_id );
 
 					$content = ( ! empty( $post->post_excerpt ) ) ? $post->post_excerpt : $post->post_content;
-					$content = trim( preg_replace( '#\[.+\]#ius', '', $content ) );
-					$content = substr( $content, 0, 55 );
+
+					$content = self::shorten_text( $content, $excerpt_num_words, $excerpt_ends_with );
 
 					if( ! $content )
 						$content = '';
