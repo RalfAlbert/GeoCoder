@@ -121,7 +121,7 @@ class WP_Formatter_V2
 
 		foreach( $values as $key => $value ){
 
-			if( ! is_string( $value ) )
+			if( is_array( $value ) || is_object( $value ) )
 				continue;
 
 			$matches	= array();
