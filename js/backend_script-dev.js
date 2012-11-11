@@ -64,7 +64,7 @@ if( null !== ( jQuery && google ) ){
 			/**
 			 * Switch between converting address-to-latlng and latlng-to-address
 			 *
-			 * @returns	null		Returns null if no data to convert available
+			 * @returns	null	Returns null if no data to convert available
 			 */
 			switchConverter: function(){
 
@@ -153,6 +153,13 @@ if( null !== ( jQuery && google ) ){
 					function( results, status ){
 
 						if( status === google.maps.GeocoderStatus.OK ){
+
+							var data = results[0].formatted_address.split( ",", 3 );
+							var zipcity = $.trim( data[1] ).split( " " );
+
+							gcb.fields.street.val( data[0] );
+							gcb.fields.zip.val( zipcity[0] );
+							gcb.fields.city.val( zipcity[1] );
 
 							gcb.fields.lat.val( results[0].geometry.location.Ya );
 							gcb.fields.lng.val( results[0].geometry.location.Za );
