@@ -298,7 +298,7 @@ class GeoCoder_Frontend extends GeoCoder
 		// save all extra-arguments without a value
 		if( ! empty( $atts ) ){
 
-			$allowed_extra_args = array( 'generalmap' );
+			$allowed_extra_args = array( 'generalmap', 'static' );
 
 			foreach( $atts as $key => $value ){
 
