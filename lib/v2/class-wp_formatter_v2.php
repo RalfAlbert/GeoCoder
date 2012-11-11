@@ -106,20 +106,23 @@ class WP_Formatter_V2
 		*/
 		if( empty( $format ) || NULL == $values )
 			return FALSE;
-			
+
 		if( ! is_string( $format ) )
 			$format = new WP_Error( 'formatter_error', '<p>Format must be a string. ' . ucfirst( gettype( $format ) ) . ' given.</p>' );
-			
+
 		if( ! is_array( $values ) && ! is_object( $values ) )
 			$format = new WP_Error( 'formatter_error', '<p>Values must be type of array or object. ' . ucfirst( gettype( $values ) ) . ' given.</p>' );
-			
+
 		/*
 		 * Do the replacement
 		*/
 		if( is_wp_error( $format ) )
 			return $format->get_error_message( 'formatter_error' );
-			
+
 		foreach( $values as $key => $value ){
+
+			if( ! is_string( $value ) )
+				continue;
 
 			$matches	= array();
 			$search_key	= sprintf( '%s%s%s', self::$start_delimiter, $key, self::$end_delimiter );
@@ -127,20 +130,20 @@ class WP_Formatter_V2
 
 			// search for the values in format-string. find %key% or %key[format]%
 			preg_match_all( $pattern, $format, $matches );
-				
+
 			// the '[format]' part was not found. replace only the key with the value
 			if( empty( $matches[1] ) )
 				$format = str_replace( $search_key, $value, $format );
-				
+
 			// one or more keys with a '[format]' part was found.
 			// walk over the formats and replace the key with a formated value
 			else
 				foreach( $matches[1] as $match ){
-					
+
 				$replace = sprintf( '%' . $match, $value );
 				$search = sprintf( '%s%s[%s]%s', self::$start_delimiter, $key, $match, self::$end_delimiter );
 				$format = str_replace( $search, $replace, $format );
-					
+
 			}
 
 		}
@@ -194,32 +197,32 @@ class WP_Formatter_V2
 
 		if( ! is_bool( $mode) && ! is_string( $mode ) )
 			return NULL;
-			
+
 		if( is_string( $mode ) && in_array( strtolower( $mode), array( 'auto', 'on', 'off') ) ){
-				
+
 			switch( strtolower( $mode ) ) {
 
 				case 'auto':
 					self::$debug = defined( 'WP_DEBUG' ) ? WP_DEBUG : FALSE;
 					break;
-						
+
 				case 'on':
 					self::$debug = TRUE;
 					break;
-						
+
 				case 'off':
 					self::$debug = FALSE;
 					break;
 
 			}
-				
+
 			self::$debug_mode = $mode;
-				
+
 		} else {
-				
+
 			self::$debug = $mode;
 			self::$debug_mode = TRUE === self::$debug ? 'on' : 'off';
-				
+
 		}
 
 
