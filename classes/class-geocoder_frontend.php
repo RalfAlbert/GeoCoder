@@ -281,8 +281,8 @@ class GeoCoder_Frontend extends GeoCoder
 			return $atts['error'];
 
 		return ( TRUE === $atts['static'] ) ?
-		self::$view->get_view( 'gmap_static', $this->setup_query_args( $atts ) ) :
-		self::$view->get_view( 'gmap_dynamic', $this->get_dynamic_mapdata( $atts ) );
+			self::$view->get_view( 'gmap_static', $this->setup_query_args( $atts ) ) :
+			self::$view->get_view( 'gmap_dynamic', $this->get_dynamic_mapdata( $atts ) );
 
 
 	}
@@ -445,6 +445,7 @@ class GeoCoder_Frontend extends GeoCoder
 	/**
 	 * Setup the query
 	 * @param	array	$atts	Shortcode attributes
+	 * @return	array	$atts	Array with query arguments
 	 */
 	protected function setup_query_args( $atts = array() ){
 		//language exceptions for some languages
