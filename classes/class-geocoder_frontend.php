@@ -298,16 +298,28 @@ class GeoCoder_Frontend extends GeoCoder
 		// save all extra-arguments without a value
 		if( ! empty( $atts ) ){
 
-			$allowed_extra_args = array( 'generalmap' );
+			$allowed_extra_args = array( 'generalmap', 'static' );
 
 			foreach( $atts as $key => $value ){
 
 				$value = strtolower( trim( $value, ' ,;/' ) );
 
-				if( is_int( $key ) && in_array( $value, $allowed_extra_args ) ){
+				if( is_int( $key ) ){
 
-					$atts[ strtolower( $value ) ] = TRUE;
-					unset( $atts[$key] );
+					// if arguments seperated by comma, split them into single arguments
+					$arguments = explode( ',', $value );
+
+					if( ! is_array( $arguments ) )
+						$arguments = (array) $arguments;
+
+					foreach( $arguments as $arg ){
+
+						if( in_array( $arg, $allowed_extra_args ) ){
+							$atts[ strtolower( $arg ) ] = TRUE;
+							unset( $atts[$key] );
+						}
+
+					}
 
 				}
 
