@@ -33,12 +33,12 @@ class GeoCoder_Admin extends GeoCoder
 	public function register_styles(){
 
 		wp_register_style(
-		'geco_backend_style',
-		plugins_url( 'css/backend_style.css', self::$file ),
-		FALSE,
-		FALSE,
-		'screen'
-				);
+			'geco_backend_style',
+			plugins_url( 'css/backend_style.css', self::$file ),
+			FALSE,
+			FALSE,
+			'screen'
+		);
 
 	}
 
@@ -55,27 +55,27 @@ class GeoCoder_Admin extends GeoCoder
 			$gmaps_api_url = self::GOOGLE_MAPS_API_URL;
 
 		wp_register_script(
-		'gmaps_api',
-		$gmaps_api_url,
-		FALSE,
-		FALSE,
-		TRUE
+			'gmaps_api',
+			$gmaps_api_url,
+			FALSE,
+			FALSE,
+			TRUE
 		);
 
 		$script_ext = ( TRUE === WP_DEBUG ) ? '-dev.js' : '-min.js';
 
 		wp_register_script(
-		'geco_backend_script',
-		plugins_url( 'js/backend_script' . $script_ext, self::$file ),
-		array( 'jquery', 'gmaps_api' ),
-		FALSE,
-		TRUE
+			'geco_backend_script',
+			plugins_url( 'js/backend_script' . $script_ext, self::$file ),
+			array( 'jquery', 'gmaps_api' ),
+			FALSE,
+			TRUE
 		);
 
 		$strings = array(
-				'please_wait'	=> __( 'Please wait...', self::LANG ),
-				'gmaps_err'		=> __( 'Geocode was not successful for the following reason: ', self::LANG ),
-				'error_no_data'	=> __( 'No data to convert. All fields are empty!', self::LANG ),
+			'please_wait'	=> __( 'Please wait...', self::LANG ),
+			'gmaps_err'		=> __( 'Geocode was not successful for the following reason: ', self::LANG ),
+			'error_no_data'	=> __( 'No data to convert. All fields are empty!', self::LANG ),
 		);
 
 		wp_localize_script( 'geco_backend_script', 'geocoderl10n', $strings );
@@ -87,7 +87,7 @@ class GeoCoder_Admin extends GeoCoder
 	protected function check_nonce(){
 
 		$nonce = isset( $_REQUEST[self::NONCE_NAME] ) ?
-		filter_var( $_REQUEST[self::NONCE_NAME], FILTER_SANITIZE_STRING ) : '';
+			filter_var( $_REQUEST[self::NONCE_NAME], FILTER_SANITIZE_STRING ) : '';
 
 		return wp_verify_nonce( $nonce, self::NONCE_SAVE );
 
@@ -107,21 +107,21 @@ class GeoCoder_Admin extends GeoCoder
 
 		return array(
 
-				'nonce_field'	=> wp_nonce_field( self::NONCE_SAVE, self::NONCE_NAME ),
+			'nonce_field'	=> wp_nonce_field( self::NONCE_SAVE, self::NONCE_NAME ),
 
-				'zip'			=> __( 'ZIP', self::LANG ),
-				'city'			=> __( 'City', self::LANG ),
-				'street'		=> __( 'Street', self::LANG ),
-				'zip_val'		=> ! empty( $opts['zip'] ) ? esc_attr( $opts['zip'] ) : '',
-				'city_val'		=> ! empty( $opts['city'] ) ? esc_attr( $opts['city'] ) : '',
-				'street_val'	=> ! empty( $opts['street'] ) ? esc_attr( $opts['street'] ) : '',
+			'zip'			=> __( 'ZIP', self::LANG ),
+			'city'			=> __( 'City', self::LANG ),
+			'street'		=> __( 'Street', self::LANG ),
+			'zip_val'		=> ! empty( $opts['zip'] ) ? esc_attr( $opts['zip'] ) : '',
+			'city_val'		=> ! empty( $opts['city'] ) ? esc_attr( $opts['city'] ) : '',
+			'street_val'	=> ! empty( $opts['street'] ) ? esc_attr( $opts['street'] ) : '',
 
-				'lon'			=> __( 'Longitude', self::LANG ),
-				'lat'			=> __( 'Latitude', self::LANG ),
-				'lon_val'		=> ! empty( $opts['lon'] ) ? esc_attr( $opts['lon'] ) : '',
-				'lat_val'		=> ! empty( $opts['lat'] ) ? esc_attr( $opts['lat'] ) : '',
+			'lon'			=> __( 'Longitude', self::LANG ),
+			'lat'			=> __( 'Latitude', self::LANG ),
+			'lon_val'		=> ! empty( $opts['lon'] ) ? esc_attr( $opts['lon'] ) : '',
+			'lat_val'		=> ! empty( $opts['lat'] ) ? esc_attr( $opts['lat'] ) : '',
 
-				'key_val'		=> ! empty( $opts['apikey'] ) ? esc_attr( $opts['apikey'] ) : '',
+			'key_val'		=> ! empty( $opts['apikey'] ) ? esc_attr( $opts['apikey'] ) : '',
 
 		);
 
