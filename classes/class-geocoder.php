@@ -186,7 +186,7 @@ class GeoCoder
 		$config = array(
 
 				// required data
-				'file'		=> __FILE__,
+				'file'		=> self::$file,
 				'user'		=> 'RalfAlbert',
 				'repo'		=> 'GeoCoder',
 
