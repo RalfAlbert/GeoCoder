@@ -78,7 +78,7 @@ class GeoCoder
 	 * Basename of index.php
 	 * @var	string	$file
 	 */
-	protected static $file		= '';
+	public static $file		= '';
 
 	/**
 	 * Template engine
@@ -186,17 +186,19 @@ class GeoCoder
 		$config = array(
 
 				// required data
-				'file'		=> __FILE__,
+				'file'		=> self::$file,
 				'user'		=> 'RalfAlbert',
 				'repo'		=> 'GeoCoder',
 
 				// optional data
 				'requires'	=> '3.0',
-				'tested'	=> '3.4',
+				'tested'	=> '3.4.2',
 
 		);
 
-		self::$updater = new WP_GitHub_Updater( $config );
+		//self::$updater = new WP_GitHub_Updater( $config ); // use this for debugging
+
+		new WP_GitHub_Updater( $config );
 
 	}
 
