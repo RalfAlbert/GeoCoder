@@ -50,8 +50,7 @@
 	font-size: 1.5em;
 }
 
-.geco_clear {
-	
-	background: url( '/wp-admin/images/no.png' ) no-repeat center center;
-	
+input.geco_clear {
+	color: red;
+	font-weight: bolder;
 }
