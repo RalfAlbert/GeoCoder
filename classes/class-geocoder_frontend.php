@@ -280,10 +280,8 @@ class GeoCoder_Frontend extends GeoCoder
 		if( ! empty( $atts['error'] ) )
 			return $atts['error'];
 
-		$this->setup_query_args( $atts );
-
 		return ( TRUE === $atts['static'] ) ?
-		self::$view->get_view( 'gmap_static', $atts ) :
+		self::$view->get_view( 'gmap_static', $this->setup_query_args( $atts ) ) :
 		self::$view->get_view( 'gmap_dynamic', $this->get_dynamic_mapdata( $atts ) );
 
 
@@ -448,7 +446,7 @@ class GeoCoder_Frontend extends GeoCoder
 	 * Setup the query
 	 * @param	array	$atts	Shortcode attributes
 	 */
-	protected function setup_query_args( &$atts ){
+	protected function setup_query_args( $atts = array() ){
 		//language exceptions for some languages
 		/*
 		 'en-AU': 'ENGLISH (AUSTRALIAN)',
@@ -481,6 +479,8 @@ class GeoCoder_Frontend extends GeoCoder
 		);
 
 		$atts['imgurl'] = add_query_arg( $query_args, $atts['staticapi'] );
+
+		return $atts;
 
 	}
 
