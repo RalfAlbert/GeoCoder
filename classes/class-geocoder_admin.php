@@ -33,12 +33,12 @@ class GeoCoder_Admin extends GeoCoder
 	public function register_styles(){
 
 		wp_register_style(
-		'geco_backend_style',
-		plugins_url( 'css/backend_style.css', self::$file ),
-		FALSE,
-		FALSE,
-		'screen'
-				);
+			'geco_backend_style',
+			plugins_url( 'css/backend_style.css', self::$file ),
+			FALSE,
+			FALSE,
+			'screen'
+		);
 
 	}
 

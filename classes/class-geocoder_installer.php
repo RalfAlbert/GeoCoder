@@ -166,11 +166,11 @@ class GeoCoder_Installer extends GeoCoder
 
 		}
 
-		$drop_table = self::$db->query( sprintf( "DROP TABLE IF EXISTS %s;", self::$tablename ) );
+		self::$db->query( sprintf( "DROP TABLE IF EXISTS %s;", self::$tablename ) );
 
 		unset(
 				$old_option_keys, $old_key, $old_data, $old_data_sql, $record, $post_id, $data,
-				$new_options, $new_key, $drop_table
+				$new_options, $new_key
 		);
 
 		return;
