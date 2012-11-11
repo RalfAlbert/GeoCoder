@@ -103,7 +103,7 @@ class WP_Formatter_V2
 	public static function sprintf( $format = '', $values = NULL ){
 		/*
 		 * Checking arguments
-		 */
+		*/
 		if( empty( $format ) || NULL == $values )
 			return FALSE;
 
@@ -115,7 +115,7 @@ class WP_Formatter_V2
 
 		/*
 		 * Do the replacement
-		 */
+		*/
 		if( is_wp_error( $format ) )
 			return $format->get_error_message( 'formatter_error' );
 

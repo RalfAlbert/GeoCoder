@@ -37,11 +37,11 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 	public function add_options_page(){
 
 		$this->pagehook = add_options_page(
-			__( 'Geocoder', self::LANG ),
-			'Geocoder',
-			'manage_options',
-			'geocoder',
-			array( &$this, 'options_page' )
+				__( 'Geocoder', self::LANG ),
+				'Geocoder',
+				'manage_options',
+				'geocoder',
+				array( &$this, 'options_page' )
 		);
 
 		add_action( 'load-' . $this->pagehook, array( &$this, 'register_styles' ) );
@@ -62,48 +62,48 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 
 		$field_vals = array(
 
-			'title'				=> 'GeoCoder',
-			'home'				=> __( 'Home', self::LANG ),
-			'home_desc'			=> __( 'Setup yout homeplace and geolocation', self::LANG ),
+				'title'				=> 'GeoCoder',
+				'home'				=> __( 'Home', self::LANG ),
+				'home_desc'			=> __( 'Setup yout homeplace and geolocation', self::LANG ),
 
-			'key_title'			=> __( 'Api-Key', self::LANG ),
-			'key_desc'			=> __( 'Please refer to the help tab in the upper right', self::LANG ),
-			'key_label'			=> __( 'Google-Api-Key', self::LANG ),
-			'key_text'			=> esc_html( __( 'Get your key here', self::LANG ) ),
-			'key_link'			=> esc_url( self::GOOGLE_API_KEY_URL ),
+				'key_title'			=> __( 'Api-Key', self::LANG ),
+				'key_desc'			=> __( 'Please refer to the help tab in the upper right', self::LANG ),
+				'key_label'			=> __( 'Google-Api-Key', self::LANG ),
+				'key_text'			=> esc_html( __( 'Get your key here', self::LANG ) ),
+				'key_link'			=> esc_url( self::GOOGLE_API_KEY_URL ),
 
-			'rss_title'			=> __( 'Options for RSS-Feed', self::LANG ),
-			'rss_desc'			=> __( 'GeoCoder can add geocoding information to the feeds in various formats. Select the format for your needings.', self::LANG ),
-			'rss_geo'			=> 'Geo',
-			'rss_geo_checked'	=> ( ! empty( $opts['rss_geo'] ) ) ? $checked : '',
-			'rss_geo_hint'		=>	__( '<strong>Attention!</strong>', self::LANG ) .
-									__( ' Your feed will not be longer valid if the geo-namespace is used!', self::LANG ),
-			'rss_icbm'			=> 'ICBM',
-			'rss_icbm_checked'	=> ( ! empty( $opts['rss_icbm'] ) ) ? $checked : '',
-			'rss_geourl'		=> 'GeoURL',
-			'rss_geourl_checked'=> ( ! empty( $opts['rss_geourl'] ) ) ? $checked : '',
+				'rss_title'			=> __( 'Options for RSS-Feed', self::LANG ),
+				'rss_desc'			=> __( 'GeoCoder can add geocoding information to the feeds in various formats. Select the format for your needings.', self::LANG ),
+				'rss_geo'			=> 'Geo',
+				'rss_geo_checked'	=> ( ! empty( $opts['rss_geo'] ) ) ? $checked : '',
+				'rss_geo_hint'		=>	__( '<strong>Attention!</strong>', self::LANG ) .
+				__( ' Your feed will not be longer valid if the geo-namespace is used!', self::LANG ),
+				'rss_icbm'			=> 'ICBM',
+				'rss_icbm_checked'	=> ( ! empty( $opts['rss_icbm'] ) ) ? $checked : '',
+				'rss_geourl'		=> 'GeoURL',
+				'rss_geourl_checked'=> ( ! empty( $opts['rss_geourl'] ) ) ? $checked : '',
 
-			'map_options'		=> __( 'Map Options', self::LANG ),
-			'map_desc'			=> __( 'Setup the default values for displaying maps.', self::LANG ),
+				'map_options'		=> __( 'Map Options', self::LANG ),
+				'map_desc'			=> __( 'Setup the default values for displaying maps.', self::LANG ),
 
-			'map_small'			=> __( 'Small', self::LANG ),
-			'map_medium'		=> __( 'Medium', self::LANG ),
-			'map_large'			=> __( 'Large', self::LANG ),
+				'map_small'			=> __( 'Small', self::LANG ),
+				'map_medium'		=> __( 'Medium', self::LANG ),
+				'map_large'			=> __( 'Large', self::LANG ),
 
-			'size_desc'			=> __( 'Sizes (width x height)', self::LANG ),
+				'size_desc'			=> __( 'Sizes (width x height)', self::LANG ),
 
-			'type_zoom_title'	=> __( 'Default Type & Zoom', self::LANG ),
-			'map_type_desc'		=> __( 'Maptype', self::LANG ),
-			'map_zoom_desc'		=> __( 'Zoom', self::LANG ),
+				'type_zoom_title'	=> __( 'Default Type & Zoom', self::LANG ),
+				'map_type_desc'		=> __( 'Maptype', self::LANG ),
+				'map_zoom_desc'		=> __( 'Zoom', self::LANG ),
 
-			'def_mapsize_title'	=> __( 'Default Size', self::LANG ),
-			'def_mapsize_desc'	=> __( 'Mapsize', self::LANG ),
+				'def_mapsize_title'	=> __( 'Default Size', self::LANG ),
+				'def_mapsize_desc'	=> __( 'Mapsize', self::LANG ),
 
-			'static_maps_title'	=> __( 'Static Maps', self::LANG ),
-			'static_maps_desc'	=> __( 'Use static maps', self::LANG ),
-			'static_maps_checked'	=> ( ! empty( $opts['static_maps'] ) ) ? $checked : '',
+				'static_maps_title'	=> __( 'Static Maps', self::LANG ),
+				'static_maps_desc'	=> __( 'Use static maps', self::LANG ),
+				'static_maps_checked'	=> ( ! empty( $opts['static_maps'] ) ) ? $checked : '',
 
-			'btn_update'		=> __( 'Save', self::LANG ),
+				'btn_update'		=> __( 'Save', self::LANG ),
 		);
 
 		$values = array_merge( $field_vals, $this->get_shared_form_fields( 'home' ) );
@@ -142,7 +142,7 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 
 			foreach( $maptypes as $type ){
 				$selected = ( $sel_ == $type ) ?
-					' selected="selected"' : '';
+				' selected="selected"' : '';
 
 				$values['map_type_options'] .= "<option value='{$type}'{$selected}>{$type}</option>";
 			}
@@ -154,7 +154,7 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 		$sel_ = self::get_options( 'def_mapzoom' );
 		for( $i = 21; $i >= 0; $i-- ){
 			$selected = ( $sel_ == $i ) ?
-				' selected="selected"' : '';
+			' selected="selected"' : '';
 
 			$values['map_zoom_options'] .= "<option value='{$i}'{$selected}>{$i}</option>";
 		}
@@ -189,11 +189,11 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 
 		// Add my_help_tab if current screen is My Admin Page
 		$screen->add_help_tab(
-			array(
-				'id'	=> 'plugin_help_tab',
-				'title'	=> 'GeoCoder',
-				'content'	=> $help_content
-		    )
+				array(
+						'id'	=> 'plugin_help_tab',
+						'title'	=> 'GeoCoder',
+						'content'	=> $help_content
+				)
 		);
 
 	}
@@ -208,28 +208,28 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 			return;
 
 		$filters = array(
-			'rss_geo'		=> FILTER_VALIDATE_BOOLEAN,
-			'rss_icbm'		=> FILTER_VALIDATE_BOOLEAN,
-			'rss_geourl'	=> FILTER_VALIDATE_BOOLEAN,
-			'static_maps'	=> FILTER_VALIDATE_BOOLEAN,
-			'apikey'		=> FILTER_SANITIZE_STRING,
-			'map_small_x'	=> FILTER_SANITIZE_NUMBER_INT,
-			'map_small_y'	=> FILTER_SANITIZE_NUMBER_INT,
-			'map_medium_x'	=> FILTER_SANITIZE_NUMBER_INT,
-			'map_medium_y'	=> FILTER_SANITIZE_NUMBER_INT,
-			'map_large_x'	=> FILTER_SANITIZE_NUMBER_INT,
-			'map_large_y'	=> FILTER_SANITIZE_NUMBER_INT,
-			'def_mapsize'	=> FILTER_SANITIZE_STRING,
-			'def_maptype'	=> FILTER_SANITIZE_STRING,
-			'def_mapzoom'	=> FILTER_SANITIZE_NUMBER_INT
+				'rss_geo'		=> FILTER_VALIDATE_BOOLEAN,
+				'rss_icbm'		=> FILTER_VALIDATE_BOOLEAN,
+				'rss_geourl'	=> FILTER_VALIDATE_BOOLEAN,
+				'static_maps'	=> FILTER_VALIDATE_BOOLEAN,
+				'apikey'		=> FILTER_SANITIZE_STRING,
+				'map_small_x'	=> FILTER_SANITIZE_NUMBER_INT,
+				'map_small_y'	=> FILTER_SANITIZE_NUMBER_INT,
+				'map_medium_x'	=> FILTER_SANITIZE_NUMBER_INT,
+				'map_medium_y'	=> FILTER_SANITIZE_NUMBER_INT,
+				'map_large_x'	=> FILTER_SANITIZE_NUMBER_INT,
+				'map_large_y'	=> FILTER_SANITIZE_NUMBER_INT,
+				'def_mapsize'	=> FILTER_SANITIZE_STRING,
+				'def_maptype'	=> FILTER_SANITIZE_STRING,
+				'def_mapzoom'	=> FILTER_SANITIZE_NUMBER_INT
 		);
 
 		// preset the dull checkboxes. if a checkbox is NOT checked, than NO value will be set in the array
 		$cb_defaults = array(
-			'rss_geo'		=> FALSE,
-			'rss_icbm'		=> FALSE,
-			'rss_geourl'	=> FALSE,
-			'static_maps'	=> FALSE
+				'rss_geo'		=> FALSE,
+				'rss_icbm'		=> FALSE,
+				'rss_geourl'	=> FALSE,
+				'static_maps'	=> FALSE
 		);
 
 		$_REQUEST['geco'] = array_merge( $cb_defaults, $_REQUEST['geco'] );
@@ -254,7 +254,7 @@ class Geocoder_Options_Page extends GeoCoder_Admin
 		$options['do_rss'] = FALSE;
 		foreach( $cb_defaults as $key => $cb )
 			if( TRUE === $options[$key] )
-				$options['do_rss'] = TRUE;
+			$options['do_rss'] = TRUE;
 
 		self::set_options( 'home', $options );
 

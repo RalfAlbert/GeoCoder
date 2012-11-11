@@ -43,7 +43,7 @@ class GeoCoder_View extends WP_Formatter_V2
 	/**
 	 * Flag if templates should be stored in class-var
 	 * @var bool
-	 */
+	*/
 	public $save_template_internal = FALSE;
 
 	/**
@@ -64,17 +64,17 @@ class GeoCoder_View extends WP_Formatter_V2
 	protected function read_template_dir(){
 
 		$dir = sprintf(
-			'%s/%s',
-			$this->template_dir,
-			'template-*.tpl'
+				'%s/%s',
+				$this->template_dir,
+				'template-*.tpl'
 		);
 
 		foreach( glob( $dir ) as $tpl ){
 
 			$basename = str_replace( $this->temp_prefix, '', basename( $tpl, $this->temp_suffix ) );
 			$this->templates[$basename] = TRUE === $this->save_template_internal ?
-				file_get_contents( $tpl ) :
-				$tpl;
+			file_get_contents( $tpl ) :
+			$tpl;
 
 		}
 
@@ -101,8 +101,8 @@ class GeoCoder_View extends WP_Formatter_V2
 			return FALSE;
 
 		return ( is_file( $this->templates[$template] ) ) ?
-			file_get_contents( $this->templates[$template] ) :
-			$this->templates[$template];
+		file_get_contents( $this->templates[$template] ) :
+		$this->templates[$template];
 
 	}
 

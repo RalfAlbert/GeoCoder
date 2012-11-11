@@ -38,8 +38,8 @@ class GeoCoder_RSS extends GeoCoder
 		}
 
 		if(
-			TRUE === self::get_options( 'rss_icbm' ) &&
-			( ! empty( $geodata['lat'] ) && ! empty( $geodata['lon'] ) )
+				TRUE === self::get_options( 'rss_icbm' ) &&
+				( ! empty( $geodata['lat'] ) && ! empty( $geodata['lon'] ) )
 		) {
 			echo "\n\t\t<icbm:latitude>{$geodata['lat']}</icbm:latitude>";
 			echo "\n\t\t<icbm:longitude>{$geodata['lon']}</icbm:longitude>\n";
@@ -47,8 +47,8 @@ class GeoCoder_RSS extends GeoCoder
 
 
 		if(
-			TRUE === self::get_options( 'rss_geourl' ) &&
-			( ! empty( $geodata['lat'] ) && ! empty( $geodata['lon'] ) )
+				TRUE === self::get_options( 'rss_geourl' ) &&
+				( ! empty( $geodata['lat'] ) && ! empty( $geodata['lon'] ) )
 		) {
 			echo "\n\t\t<geourl:latitude>{$geodata['lat']}</geourl:latitude>";
 			echo "\n\t\t<geourl:longitude>{$geodata['lon']}</geourl:longitude>\n";
@@ -62,19 +62,19 @@ class GeoCoder_RSS extends GeoCoder
 	 */
 	public static function insert_namespaces(){
 
-	   // Add geo
-	    if( TRUE === self::get_options( 'rss_geo' ) )
-	        //echo "\txmlns:geo=\"http://www.w3.org/2003/01/geo/wgs84_pos#\"\n";
-	        echo "\txmlns:georss=\"http://www.georss.org/georss\"\n";
+		// Add geo
+		if( TRUE === self::get_options( 'rss_geo' ) )
+			//echo "\txmlns:geo=\"http://www.w3.org/2003/01/geo/wgs84_pos#\"\n";
+			echo "\txmlns:georss=\"http://www.georss.org/georss\"\n";
 
-	   // Add icbm
-	    if( TRUE === self::get_options( 'rss_icbm' ) )
-	        echo "\txmlns:icbm=\"http://postneo.com/icbm\"\n";
+		// Add icbm
+		if( TRUE === self::get_options( 'rss_icbm' ) )
+			echo "\txmlns:icbm=\"http://postneo.com/icbm\"\n";
 
 
-	   // Add geourl
-	    if( TRUE === self::get_options( 'rss_geourl' ) )
-	    	echo "\txmlns:geourl=\"http://geourl.org/rss/module/\"\n";
+		// Add geourl
+		if( TRUE === self::get_options( 'rss_geourl' ) )
+			echo "\txmlns:geourl=\"http://geourl.org/rss/module/\"\n";
 
 	}
 

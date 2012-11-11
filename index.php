@@ -33,6 +33,6 @@ if( ! class_exists( 'Plugin_Initialisation' ) )
 	require_once dirname( __FILE__ ) . '/lib/v2/class-plugin_initialisation.php';
 
 Plugin_Initialisation::init_plugin(
-	__FILE__,
-	array( 'GeoCoder','plugin_construct' )
+__FILE__,
+array( 'GeoCoder','plugin_construct' )
 );

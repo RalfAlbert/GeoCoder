@@ -27,7 +27,7 @@ class GeoCoder_Edit_Form extends GeoCoder_Admin
 	 * - Add hook for meta-box
 	 * - Add hook for saving data
 	 * - Add styles & sscripts to admin-header
-	 */
+	*/
 	public function __construct(){
 
 		add_action( 'add_meta_boxes',	array( &$this, 'add_meta_boxes' ) );
@@ -55,12 +55,12 @@ class GeoCoder_Edit_Form extends GeoCoder_Admin
 
 		foreach( $this->pages as $page )
 			add_meta_box(
-				'geocoder',
-				__( 'GeoCoder', self::LANG),
-				array( &$this, 'edit_form' ),
-				$page,
-				'advanced',
-				'default'
+					'geocoder',
+					__( 'GeoCoder', self::LANG),
+					array( &$this, 'edit_form' ),
+					$page,
+					'advanced',
+					'default'
 			);
 
 	}
@@ -74,9 +74,9 @@ class GeoCoder_Edit_Form extends GeoCoder_Admin
 
 		$field_vals = array(
 
-			'btn_convert'	=> __( 'Convert Data', self::LANG ),
-			'btn_clear'		=> '<img src="images/no.png" />',
-			'apikey'		=> self::get_options( 'apikey' )
+				'btn_convert'	=> __( 'Convert Data', self::LANG ),
+				'btn_clear'		=> '<img src="images/no.png" />',
+				'apikey'		=> self::get_options( 'apikey' )
 
 		);
 
@@ -105,16 +105,16 @@ class GeoCoder_Edit_Form extends GeoCoder_Admin
 		global $post;
 
 		$lonlat_filter = array(
-					'filter'	=> FILTER_SANITIZE_NUMBER_FLOAT,
-					'flags'		=> FILTER_FLAG_ALLOW_FRACTION
+				'filter'	=> FILTER_SANITIZE_NUMBER_FLOAT,
+				'flags'		=> FILTER_FLAG_ALLOW_FRACTION
 		);
 
 		$filters = array(
-			'lon'		=> $lonlat_filter,
-			'lat'		=> $lonlat_filter,
-			'zip'		=> FILTER_SANITIZE_STRING,
-			'city'		=> FILTER_SANITIZE_STRING,
-			'street'	=> FILTER_SANITIZE_STRING,
+				'lon'		=> $lonlat_filter,
+				'lat'		=> $lonlat_filter,
+				'zip'		=> FILTER_SANITIZE_STRING,
+				'city'		=> FILTER_SANITIZE_STRING,
+				'street'	=> FILTER_SANITIZE_STRING,
 		);
 
 		$options = array_merge( self::$options, $_REQUEST['geco'] );
