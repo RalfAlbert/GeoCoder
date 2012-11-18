@@ -61,7 +61,7 @@ class GeoCoder_Frontend extends GeoCoder
 		else
 			$gmaps_api_url = self::GOOGLE_MAPS_API_URL;
 
-		wp_enqueue_script(
+		wp_register_script(
 			'gmaps_api',
 			$gmaps_api_url,
 			FALSE,
@@ -281,8 +281,10 @@ class GeoCoder_Frontend extends GeoCoder
 			$atts['static'] = FALSE;
 
 		// enqueue js if static maps is false
-		if( FALSE === $atts['static'] )
+		if( FALSE === $atts['static'] ){
+			wp_enqueue_script( 'gmaps_api' );
 			wp_enqueue_script( 'geco_frontend_script' );
+		}
 
 		// return the last recognized error
 		if( ! empty( $atts['error'] ) )
