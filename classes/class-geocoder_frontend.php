@@ -42,7 +42,7 @@ class GeoCoder_Frontend extends GeoCoder
 		add_shortcode( 'glink',	array( &$this, 'glink_shortcode' ) );
 		add_shortcode( 'gmap',	array( &$this, 'gmap_shortcode' ) );
 
-		if( FALSE === self::get_options( 'static_maps') )
+		//if( FALSE === self::get_options( 'static_maps') )
 			add_action( 'init', array( __CLASS__, 'register_scripts' ), 1 );
 
 		self::$gmap_icon = apply_filters( 'geocoder_gmap_icon', self::$gmap_icon );
@@ -62,21 +62,21 @@ class GeoCoder_Frontend extends GeoCoder
 			$gmaps_api_url = self::GOOGLE_MAPS_API_URL;
 
 		wp_enqueue_script(
-		'gmaps_api',
-		$gmaps_api_url,
-		FALSE,
-		FALSE,
-		TRUE
+			'gmaps_api',
+			$gmaps_api_url,
+			FALSE,
+			FALSE,
+			TRUE
 		);
 
 		$script_ext = ( TRUE === WP_DEBUG ) ? '-dev.js' : '-min.js';
 
-		wp_enqueue_script(
-		'geco_frontend_script',
-		plugins_url( 'js/frontend_script' . $script_ext, self::$file ),
-		array( 'jquery', 'gmaps_api' ),
-		FALSE,
-		TRUE
+		wp_register_script(
+			'geco_frontend_script',
+			plugins_url( 'js/frontend_script' . $script_ext, self::$file ),
+			array( 'jquery', 'gmaps_api' ),
+			FALSE,
+			TRUE
 		);
 
 
@@ -85,12 +85,12 @@ class GeoCoder_Frontend extends GeoCoder
 		* @see: http://stackoverflow.com/questions/7471830/google-maps-api-v3-weird-ui-display-glitches-with-screenshot
 		*/
 		wp_enqueue_style(
-		'geco_frontend_css',
-		plugins_url( 'css/frontend_style.css', self::$file ),
-		false,
-		false,
-		'screen'
-				);
+			'geco_frontend_css',
+			plugins_url( 'css/frontend_style.css', self::$file ),
+			FALSE,
+			FALSE,
+			'screen'
+		);
 
 		// ajaxurl for frontend ajax calls
 		$data = array(
@@ -276,10 +276,19 @@ class GeoCoder_Frontend extends GeoCoder
 
 		$this->sanitize_gmap_attributes( $atts );
 
+		// if dynamic map is forced by shortcode option, set static maps to false
+		if( TRUE === $atts['dynamic'] )
+			$atts['static'] = FALSE;
+
+		// enqueue js if static maps is false
+		if( FALSE === $atts['static'] )
+			wp_enqueue_script( 'geco_frontend_script' );
+
 		// return the last recognized error
 		if( ! empty( $atts['error'] ) )
 			return $atts['error'];
 
+		// create output
 		return ( TRUE === $atts['static'] ) ?
 			self::$view->get_view( 'gmap_static', $this->setup_query_args( $atts ) ) :
 			self::$view->get_view( 'gmap_dynamic', $this->get_dynamic_mapdata( $atts ) );
@@ -339,6 +348,7 @@ class GeoCoder_Frontend extends GeoCoder
 						'dynamicapi'	=> self::GOOGLE_MAPS_API_URL,
 
 						'static'		=> self::get_options( 'static_maps' ),
+						'dynamic'		=> FALSE,
 						'generalmap'	=> FALSE,
 
 						'center'		=> '',
