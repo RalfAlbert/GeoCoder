@@ -342,7 +342,7 @@ class GeoCoder_Frontend extends GeoCoder
 						'generalmap'	=> FALSE,
 
 						'center'		=> '',
-						'adress'		=> '',
+						'address'		=> '',
 						'latlng'		=> '',
 						'info'			=> '',
 						'text'			=> 'GoogleMaps',
@@ -383,6 +383,16 @@ class GeoCoder_Frontend extends GeoCoder
 		// push center-attribute to geodata to prefer a given center over given adress/latlon
 		if( ! empty( $atts['center'] ) )
 			$atts['geodata']['center'] = $atts['center'];
+
+		// save adress and latlng options from shortcode (if present)
+		if( ! empty( $atts['address'] ) ){
+			$atts['geodata']['address'] = $atts['address'];
+			$atts['geodata']['lat'] = '';
+			$atts['geodata']['lon'] = '';
+		}
+
+		if( ! empty( $atts['latlng'] ) )
+			$atts['geodata']['latlng'] = $atts['latlng'];
 
 		// get the location (address and/or latlon)
 		$atts['center']	= $this->get_urlencoded_location_data( $atts['geodata'] );
@@ -552,6 +562,9 @@ class GeoCoder_Frontend extends GeoCoder
 	 */
 	protected function get_urlencoded_address( $geodata = array() ){
 
+		if( isset( $geodata['address'] ) && ! empty( $geodata['address'] ) )
+			return (string) $geodata['address'];
+
 		$street = ! empty( $geodata['street'] ) ? urlencode( $geodata['street'] ) . ',+' : '';
 		$zip	= ! empty( $geodata['zip'] ) ? urlencode( $geodata['zip'] ) . '+' : '';
 		$city	= ! empty( $geodata['city'] ) ? urlencode( $geodata['city'] ) : '';
@@ -566,6 +579,16 @@ class GeoCoder_Frontend extends GeoCoder
 	 * @return string $latlon_urlencoded
 	 */
 	protected function get_urlencoded_latlon( $geodata = array() ){
+
+		if( isset( $geodata['latlng'] ) && ! empty( $geodata['latlng'] ) ){
+
+			$latlng = $this->get_center_formated( $geodata['latlng'] );
+
+			if( FALSE !== $latlng )
+				return $latlng;
+
+		}
+
 
 		if( ! empty( $geodata['lat'] ) && ! empty( $geodata['lon'] ) )
 			return sprintf( '%f,%f', $geodata['lat'], $geodata['lon'] );
