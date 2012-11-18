@@ -296,7 +296,7 @@ class GeoCoder_Frontend extends GeoCoder
 		// save all extra-arguments without a value
 		if( ! empty( $atts ) ){
 
-			$allowed_extra_args = array( 'generalmap', 'static' );
+			$allowed_extra_args = array( 'generalmap', 'static', 'dynamic' );
 
 			foreach( $atts as $key => $value ){
 
@@ -337,16 +337,22 @@ class GeoCoder_Frontend extends GeoCoder
 				array(
 						'staticapi'		=> self::GOOGLE_STATIC_MAP_URL,
 						'dynamicapi'	=> self::GOOGLE_MAPS_API_URL,
+
 						'static'		=> self::get_options( 'static_maps' ),
-						'text'			=> 'GoogleMaps',
+						'generalmap'	=> FALSE,
+
 						'center'		=> '',
+						'adress'		=> '',
+						'latlng'		=> '',
+						'info'			=> '',
+						'text'			=> 'GoogleMaps',
+
 						'zoom'			=> self::get_options( 'def_mapzoom' ),
 						'size'			=> '',
 						'width'			=> '',
 						'height'		=> '',
 						'format'		=> self::get_options( 'def_mapformat' ),
 						'maptype'		=> self::get_options( 'def_maptype' ),
-						'generalmap'	=> FALSE,
 				),
 				$atts
 		);
