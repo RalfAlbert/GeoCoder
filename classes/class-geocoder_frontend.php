@@ -427,7 +427,7 @@ class GeoCoder_Frontend extends GeoCoder
 			$atts['size'] = "{$atts['width']}x{$atts['height']}";
 		// select default named mapsize if no size-value is set
 		elseif( empty( $atts['size'] ) && empty( $atts['width'] ) && empty( $atts['height'] ) )
-		$atts['size'] = self::get_options( 'def_mapsize' );
+			$atts['size'] = self::get_options( 'def_mapsize' );
 
 		else
 			$atts['size'] = strtolower( $atts['size'] );
@@ -508,12 +508,10 @@ class GeoCoder_Frontend extends GeoCoder
 
 		$mapdata['zoom']		= $atts['zoom'];
 		$mapdata['maptype']		= $atts['maptype'];
-		$mapdata['generalmap']	= (int) $atts['generalmap']; //( isset( $atts['generalmap'] ) && TRUE === $atts['generalmap'] ) ? $this->get_generalmap_ids() : '';
+		$mapdata['generalmap']	= (int) $atts['generalmap'];
 
 		$mapdata['latlng']		= empty( $atts['geodata']['center'] ) ? $this->get_urlencoded_latlon( $atts['geodata'] ) : $this->get_center_formated( $atts['geodata']['center'] );
 		$mapdata['addr']		= empty( $atts['geodata']['center'] ) ? $this->get_urlencoded_address( $atts['geodata'] ) : '';
-
-		//$mapdata['script']		= $this->get_gmap_scriptblock( $mapdata );
 
 		return $mapdata;
 
